@@ -1,3 +1,7 @@
+build*/
+
+*.mex*
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
