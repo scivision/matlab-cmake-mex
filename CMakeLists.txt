@@ -5,3 +5,4 @@ project(demoMatlab LANGUAGES C CXX Fortran)
 include(CTest)
 
 add_subdirectory(matlab)
+add_subdirectory(octave)

@@ -1,5 +1,7 @@
 # https://www.mathworks.com/support/requirements/supported-compilers.html
 
+set_directory_properties(PROPERTIES LABELS matlab)
+
 set(matlab_timeout 90)
 
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MX_LIBRARY MEX_COMPILER)
@@ -33,7 +35,7 @@ cmake_path(GET Matlab_MEX_LIBRARY PARENT_PATH Matlab_LIBRARY_DIR)
 
 if(MEX_C_SRC AND Matlab_MEX_COMPILER)
 
-add_custom_target(matmult_mex
+add_custom_target(matmult_mex ALL
 COMMAND ${Matlab_MEX_COMPILER} -L${Matlab_LIBRARY_DIR} -lmwblas ${MEX_C_SRC}
 BYPRODUCTS matrixMultiply${mexext}
 )
@@ -54,7 +56,7 @@ endif()
 # --- Fortran MEX
 
 if(WIN32 OR APPLE)
-  if(NOT CMAKE_Fortran_COMPILER_ID MATCHES Intel)
+  if(NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
     message(STATUS "SKIP: on Windows and MacOS, Matlab Fortran supports only Intel compiler.")
     return()
   endif()
