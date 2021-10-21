@@ -17,7 +17,7 @@ if(Octave_Interpreter_FOUND)
   endif()
 
   add_test(NAME BasicOctave
-    COMMAND ${Octave_EXECUTABLE} --eval "oruntests('${CMAKE_CURRENT_SOURCE_DIR}')"
+    COMMAND ${Octave_EXECUTABLE} --eval "$<$<VERSION_GREATER_EQUAL:${Octave_VERSION},6>:o>runtests('${CMAKE_CURRENT_SOURCE_DIR}')"
   )
   set_tests_properties(BasicOctave PROPERTIES TIMEOUT 20)
 endif()
