@@ -2,7 +2,6 @@
 
 Examples of Matlab with CMAKE and MEX producing accelerated Matlab code
 
-
 ## Matlab
 
 One-time setup: if you've never used `mex` before, you must setup the C++ compiler.
@@ -21,5 +20,4 @@ Will ask you to select a compiler, or simply return:
 
 [Octave from CMake](./octave) via our
 [FindOctave.cmake](./cmake/Modules/FindOctave.cmake)
-works well from CMake for unit tests, liboctave, etc. for Octave &ge; 3.8.
-We didn't try older versions of Octave.
+works for unit tests, liboctave, etc.
