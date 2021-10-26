@@ -66,8 +66,7 @@ if(WIN32)
   set(_suff
     Octave-6.1.0/mingw64/bin
     Octave-6.2.0/mingw64/bin
-    Octave-6.2.90/mingw64/bin
-    Octave-6.2.92/mingw64/bin
+    Octave-6.3.0/mingw64/bin
     Octave-6.3.90/mingw64/bin
     )
 endif()
