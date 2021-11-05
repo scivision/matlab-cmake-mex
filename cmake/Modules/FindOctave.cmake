@@ -67,7 +67,7 @@ if(WIN32)
     Octave-6.1.0/mingw64/bin
     Octave-6.2.0/mingw64/bin
     Octave-6.3.0/mingw64/bin
-    Octave-6.3.90/mingw64/bin
+    Octave-6.4.0/mingw64/bin
     )
 endif()
 
