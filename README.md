@@ -4,17 +4,25 @@ Examples of Matlab with CMAKE and MEX producing accelerated Matlab code
 
 ## Matlab
 
-One-time setup: if you've never used `mex` before, you must setup the C++ compiler.
-It doesn't hurt to do this again if you're not sure.
-From Matlab:
+One-time setup from Matlab:
 
 ```matlab
+mex -setup -client engine C
 mex -setup -client engine C++
+mex -setup -client engine Fortran
 ```
 
-Will ask you to select a compiler, or simply return:
+On Windows for C/C++, MSYS2 MinGW can be used by setting environment variable:
 
-> ENGINE configured to use 'g++' for C++ language compilation.
+```
+MW_MINGW_LOC=C:/msys64/mingw64
+```
+
+confirm location of GCC on Windows like:
+
+```pwsh
+where.exe gcc
+```
 
 ## GNU Octave
 

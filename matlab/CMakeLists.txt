@@ -33,9 +33,9 @@ HINTS ${Matlab_ROOT_DIR}/extern/examples/refbook
 )
 
 if(MEX_C_SRC)
-  add_custom_target(matmult_mex ALL
-  COMMAND ${Matlab_MEX_COMPILER} ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_BINARY_DIR} -lmwblas ${MEX_C_SRC}
-  BYPRODUCTS matrixMultiply${Matlab_MEX_SUFFIX}
+  add_custom_target(matrixMultiply ALL
+  COMMAND ${Matlab_MEX_COMPILER} ${MEX_C_SRC} ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_BINARY_DIR} -lmwblas
+  BYPRODUCTS matrixMultiply.${Matlab_MEX_SUFFIX}
   )
 
   # does not work since can't use link flags
