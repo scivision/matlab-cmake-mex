@@ -24,7 +24,8 @@ matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
 
 cmake_path(GET Matlab_MEX_COMPILER PARENT_PATH Matlab_BINARY_DIR)
 
-# --- C++ MEX
+# --- C++ MEX: called from Matlab
+
 find_file(MEX_C_SRC
 NAMES matrixMultiply.c
 NO_DEFAULT_PATH
@@ -49,40 +50,64 @@ if(MEX_C_SRC)
   )
 endif()
 
-# --- Fortran MEX
+# --- C calling Matlab Engine
+if(CMAKE_VERSION VERSION_LESS 3.22)
+  message(STATUS "SKIP: MatlabEngine tests require CMake >= 3.22")
+  return()
+endif()
 
+add_executable(fengdemo_c fengdemo.c)
+target_include_directories(fengdemo_c PRIVATE ${Matlab_INCLUDE_DIRS})
+target_link_libraries(fengdemo_c PRIVATE ${Matlab_LIBRARIES})
+
+add_test(NAME MatlabEngine_C COMMAND fengdemo_c)
+set_tests_properties(MatlabEngine_C PROPERTIES TIMEOUT ${matlab_timeout})
+
+
+# --- Fortran calling Matlab Engine
+
+set(TestFortranEngine true)
 if(WIN32 OR APPLE)
   if(NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
     message(STATUS "SKIP: on Windows and MacOS, Matlab Fortran supports only Intel compiler.")
-    return()
+    set(TestFortranEngine false)
   endif()
 elseif(NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   message(STATUS "SKIP: On Linux, Matlab Fortran supports only Gfortran.")
-  return()
+  set(TestFortranEngine false)
 endif()
 
-if(CMAKE_VERSION VERSION_LESS 3.22)
-  message(STATUS "SKIP: Matlab_Fortran test required CMake >= 3.22")
-  return()
+
+
+if(TestFortranEngine)
+  add_executable(fengdemo_f fengdemo.F90)
+  target_include_directories(fengdemo_f PRIVATE ${Matlab_INCLUDE_DIRS})
+  target_link_libraries(fengdemo_f PRIVATE ${Matlab_LIBRARIES})
+
+  add_test(NAME MatlabEngine_Fortran COMMAND fengdemo_f)
+  set_tests_properties(MatlabEngine_Fortran PROPERTIES TIMEOUT ${matlab_timeout})
 endif()
 
-add_executable(fengdemo fengdemo.F90)
-target_include_directories(fengdemo PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(fengdemo PRIVATE ${Matlab_LIBRARIES})
+# --- Engine test props
 
-add_test(NAME Matlab_Fortran COMMAND $<TARGET_FILE:fengdemo>)
-set_tests_properties(Matlab_Fortran PROPERTIES TIMEOUT ${matlab_timeout})
+foreach(t MatlabEngine_C MatlabEngine_Fortran)
+
+if(NOT TEST ${t})
+  continue()
+endif()
 
 if(APPLE)
-  set_tests_properties(Matlab_Fortran PROPERTIES
-  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:"${Matlab_BINARY_DIR}:${MATLAB_ROOT_DIR}/os/maci64"
+  set_tests_properties(${t} PROPERTIES
+  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARY_DIR}:${Matlab_ROOT_DIR}/sys/os/maci64
   )
 elseif(WIN32)
-  set_tests_properties(Matlab_Fortran PROPERTIES
+  set_tests_properties(${t} PROPERTIES
   ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Matlab_BINARY_DIR}
   )
 else()
-  set_tests_properties(Matlab_Fortran PROPERTIES
-  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:"${Matlab_BINARY_DIR}:${MATLAB_ROOT_DIR}/os/glnxa64"
+  set_tests_properties(${t} PROPERTIES
+  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARY_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
   )
 endif()
+
+endforeach()
