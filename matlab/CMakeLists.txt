@@ -5,6 +5,9 @@ set_directory_properties(PROPERTIES LABELS matlab)
 set(matlab_timeout 90)
 
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MX_LIBRARY MEX_COMPILER)
+if(NOT Matlab_FOUND)
+  return()
+endif()
 
 add_test(NAME Matlab:script
 COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_true'); assertSuccess(r)")
@@ -16,39 +19,38 @@ DISABLED $<NOT:$<BOOL:${Matlab_FOUND}>>
 
 include(matlab_include.cmake)
 
+matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
+
 # --- C++ MEX
 if(Matlab_ENG_LIBRARY_FOUND AND Matlab_MX_LIBRARY_FOUND)
 
-find_file(MEX_C_SRC
-NAMES matrixMultiply.c
-NO_DEFAULT_PATH
-HINTS ${Matlab_ROOT_DIR}/extern/examples/refbook
-)
+  find_file(MEX_C_SRC
+  NAMES matrixMultiply.c
+  NO_DEFAULT_PATH
+  HINTS ${Matlab_ROOT_DIR}/extern/examples/refbook
+  )
 
-cmake_path(GET Matlab_MEX_LIBRARY PARENT_PATH Matlab_LIBRARY_DIR)
+  cmake_path(GET Matlab_MEX_COMPILER PARENT_PATH Matlab_BINARY_DIR)
 
-# find_library(MEX_BLAS
-# NAMES mwblas
-# NO_DEFAULT_PATH
-# HINTS ${Matlab_LIBRARY_DIR}
-# )
+  if(MEX_C_SRC AND Matlab_MEX_COMPILER)
 
-if(MEX_C_SRC AND Matlab_MEX_COMPILER)
+    add_custom_target(matmult_mex ALL
+    COMMAND ${Matlab_MEX_COMPILER} ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_BINARY_DIR} -lmwblas ${MEX_C_SRC}
+    BYPRODUCTS matrixMultiply${Matlab_MEX_SUFFIX}
+    )
 
-add_custom_target(matmult_mex ALL
-COMMAND ${Matlab_MEX_COMPILER} -L${Matlab_LIBRARY_DIR} -lmwblas ${MEX_C_SRC}
-BYPRODUCTS matrixMultiply${mexext}
-)
+    # does not work since can't use link flags
+    # matlab_add_mex(NAME matrixMultiply SHARED SRC ${MEX_C_SRC} LINK_TO -lmwblas R2018a)
 
-add_test(NAME Matlab:BLAS
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_blas'); assertSuccess(r)"
-)
-# WORKING_DIRECTORY does not work, need addpath()
-set_tests_properties(Matlab:BLAS PROPERTIES
-TIMEOUT ${matlab_timeout}
-)
+    add_test(NAME Matlab:BLAS
+    COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_blas'); assertSuccess(r)"
+    )
+    # WORKING_DIRECTORY does not work, need addpath()
+    set_tests_properties(Matlab:BLAS PROPERTIES
+    TIMEOUT ${matlab_timeout}
+    )
 
-endif()
+  endif()
 
 endif()
 
@@ -74,7 +76,7 @@ if(Matlab_ENG_LIBRARY_FOUND AND Matlab_MX_LIBRARY_FOUND)
 
   add_test(NAME Matlab:Fortran COMMAND $<TARGET_FILE:fengdemo>)
   set_tests_properties(Matlab:Fortran PROPERTIES
-    TIMEOUT ${matlab_timeout}
-    ENVIRONMENT "${libenv}"
+  TIMEOUT ${matlab_timeout}
+  ENVIRONMENT "${libenv}"
   )
 endif()
