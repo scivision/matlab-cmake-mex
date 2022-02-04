@@ -16,7 +16,7 @@
 
 int main(int argc, char* argv[]){
 	Engine *ep;
-	mxArray *T = NULL, *result = NULL;
+	mxArray *T = NULL;
 	char buffer[BUFSIZE+1];
 	double time[10] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 };
 
@@ -28,6 +28,8 @@ int main(int argc, char* argv[]){
 		fprintf(stderr, "\nCan't start MATLAB engine\n");
 		return EXIT_FAILURE;
 	}
+
+  printf("\nMatlab engine started\n");
 
 	/*
 	 * PART I
@@ -71,9 +73,11 @@ int main(int argc, char* argv[]){
 	/*
 	 * We're done for Part I! Free memory, close MATLAB figure.
 	 */
-	printf("Done for Part I.\n");
+	printf("Done with Matlab Engine demo.\n");
 	mxDestroyArray(T);
 	engEvalString(ep, "close;");
+
+	engClose(ep);
 
 	return EXIT_SUCCESS;
 }
