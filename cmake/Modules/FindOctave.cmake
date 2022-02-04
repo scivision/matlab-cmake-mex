@@ -150,8 +150,10 @@ endif(Octave_EXECUTABLE)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Octave
-  VERSION_VAR Octave_VERSION
-  HANDLE_COMPONENTS)
+VERSION_VAR Octave_VERSION
+HANDLE_COMPONENTS
+HANDLE_VERSION_RANGE
+)
 
 
 if(Octave_Development_FOUND)
@@ -174,7 +176,7 @@ if(Octave_Interpreter_FOUND)
     add_executable(Octave::Interpreter IMPORTED)
     set_target_properties(Octave::Interpreter PROPERTIES
     IMPORTED_LOCATION ${Octave_EXECUTABLE}
-    VERSION ${Octave_VERSION}
+    VERSION "${Octave_VERSION}"
     )
   endif()
 endif()
