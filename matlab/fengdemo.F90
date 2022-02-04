@@ -22,11 +22,7 @@ use, intrinsic :: iso_fortran_env, only: dp=>real64
 implicit none
 
 mwPointer engOpen, engGetVariable, mxCreateDoubleMatrix
-#if MX_HAS_INTERLEAVED_COMPLEX
 mwPointer mxGetDoubles
-#else
-mwPointer mxGetPr
-#endif
 mwPointer :: ep, T, D
 mwSize, parameter :: M=1, N=10
 real(dp) ::  dist(N)
@@ -36,17 +32,24 @@ mwSize :: i
 real(dp), parameter :: time(N)=[ 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
 character(2) :: argv
 
-ep = engOpen('matlab ')
+character(1000) :: buf
+integer :: ierr, L
 
-if (ep == 0) error stop 'Cannot start MATLAB engine'
+ep = engOpen("")
+
+if (ep == 0) then
+  call get_environment_variable("LD_LIBRARY_PATH", buf, length=L, status=ierr)
+  if(ierr == 0 .and. L > 0) print *, "LD_LIBRARY_PATH: " // trim(buf)
+
+  call get_environment_variable("DYLD_LIBRARY_PATH", buf, length=L, status=ierr)
+  if(ierr == 0 .and. L > 0) print *, "DYLD_LIBRARY_PATH: " // trim(buf)
+
+  error stop 'Cannot start MATLAB engine'
+endif
 
 T = mxCreateDoubleMatrix(M, N, 0)
-#if MX_HAS_INTERLEAVED_COMPLEX
-call mxCopyReal8ToPtr(time, mxGetDoubles(T), N)
-#else
-call mxCopyReal8ToPtr(time, mxGetPr(T), N)
-#endif
 
+call mxCopyReal8ToPtr(time, mxGetDoubles(T), N)
 
 !     Place the variable T into the MATLAB workspace
 
@@ -68,11 +71,9 @@ if (status==0) then
 endif
 
 D = engGetVariable(ep, 'D')
-#if MX_HAS_INTERLEAVED_COMPLEX
+
 call mxCopyPtrToReal8(mxGetDoubles(D), dist, N)
-#else
-call mxCopyPtrToReal8(mxGetPr(D), dist, N)
-#endif
+
 print *, 'MATLAB computed the following distances:'
 print *, '  time(s)  distance(m)'
 do i=1,size(time)
