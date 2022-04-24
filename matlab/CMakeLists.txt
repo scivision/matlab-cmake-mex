@@ -2,6 +2,8 @@
 
 set_directory_properties(PROPERTIES LABELS matlab)
 
+include(CheckSourceCompiles)
+
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MX_LIBRARY MEX_COMPILER)
 if(NOT Matlab_FOUND)
   return()
@@ -38,6 +40,31 @@ if(MEX_C_SRC)
   # WORKING_DIRECTORY does not work, need addpath()
 endif()
 
+# some systems have Matlab messed up libstdc++. Overriding with system libstdc++ doesn't necessarily help.
+set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES})
+set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
+check_source_compiles(C
+[=[
+#include "engine.h"
+
+#define  BUFSIZE 256
+
+int main(int argc, char* argv[]){
+	Engine *ep;
+	mxArray *T = NULL;
+
+	ep = engOpen("");
+
+	T = mxCreateDoubleMatrix(1, 10, mxREAL);
+
+	return 0;
+}
+]=]
+Matlab_STDCXX_OK
+)
+
+if(Matlab_STDCXX_OK)
+
 # --- C calling Matlab Engine
 
 add_executable(engdemo_c engdemo.c)
@@ -67,6 +94,8 @@ if(TestFortranEngine)
 
   add_test(NAME MatlabEngine_Fortran COMMAND eng_f)
 endif()
+
+endif(Matlab_STDCXX_OK)
 
 # --- Engine test props
 
