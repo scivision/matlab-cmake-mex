@@ -1,6 +1,6 @@
 set_directory_properties(PROPERTIES LABELS octave)
 
-find_package(Octave COMPONENTS Interpreter)
+find_package(Octave COMPONENTS Development Interpreter)
 
 if(NOT Octave_FOUND)
   return()
@@ -12,7 +12,6 @@ COMMAND ${Octave_EXECUTABLE} --eval "oruntests('${CMAKE_CURRENT_SOURCE_DIR}')"
 
 # -- devel
 # Fortran: https://wiki.octave.org/Fortran
-find_package(Octave COMPONENTS Development)
 if(Octave_Development_FOUND)
   add_executable(octdemo octdemo.cpp)
   target_link_libraries(octdemo Octave::Octave)
@@ -24,7 +23,6 @@ if(Octave_Development_FOUND)
     set_tests_properties(DevOctave PROPERTIES ENVIRONMENT_MODIFICATION PATH=path_list_append:${Octave_DLLPATH})
   endif()
 endif()
-
 
 # --- props
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)

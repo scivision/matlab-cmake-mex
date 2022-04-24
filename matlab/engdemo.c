@@ -32,13 +32,6 @@ int main(int argc, char* argv[]){
   printf("\nMatlab engine started\n");
 
 	/*
-	 * PART I
-	 *
-	 * For the first half of this demonstration, send data
-	 * to MATLAB, analyze the data, and plot the result.
-	 */
-
-	/*
 	 * Create a variable for the data
 	 */
 	T = mxCreateDoubleMatrix(1, 10, mxREAL);
@@ -54,28 +47,8 @@ int main(int argc, char* argv[]){
 	 */
 	engEvalString(ep, "D = .5.*(-9.8).*T.^2;");
 
-	/*
-	 * Plot the result
-	 */
-  if(argc > 0 && strcmp(argv[1],"-v")==0){
-	engEvalString(ep, "plot(T,D);");
-	engEvalString(ep, "title('Position vs. Time for a falling object');");
-	engEvalString(ep, "xlabel('Time (seconds)');");
-	engEvalString(ep, "ylabel('Position (meters)');");
-
-	/*
-	 * use fgetc() to pause long enough to be
-	 * able to see the plot
-	 */
-	printf("Hit return to continue\n\n");
-	fgetc(stdin);
-  }
-	/*
-	 * We're done for Part I! Free memory, close MATLAB figure.
-	 */
 	printf("Done with Matlab Engine demo.\n");
 	mxDestroyArray(T);
-	engEvalString(ep, "close;");
 
 	engClose(ep);
 

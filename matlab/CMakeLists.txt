@@ -2,23 +2,14 @@
 
 set_directory_properties(PROPERTIES LABELS matlab)
 
-set(matlab_timeout 90)
-
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MX_LIBRARY MEX_COMPILER)
 if(NOT Matlab_FOUND)
   return()
 endif()
 
 add_test(NAME Matlab_script
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_true'); assertSuccess(r)")
-set_tests_properties(Matlab_script PROPERTIES
-TIMEOUT ${matlab_timeout}
-DISABLED $<NOT:$<BOOL:${Matlab_FOUND}>>
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_true'); assertSuccess(r)"
 )
-
-if(NOT (Matlab_ENG_LIBRARY_FOUND AND Matlab_MX_LIBRARY_FOUND AND Matlab_MEX_COMPILER))
-  return()
-endif()
 
 matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
 
@@ -45,20 +36,15 @@ if(MEX_C_SRC)
   COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_blas'); assertSuccess(r)"
   )
   # WORKING_DIRECTORY does not work, need addpath()
-  set_tests_properties(Matlab:BLAS PROPERTIES
-  TIMEOUT ${matlab_timeout}
-  )
 endif()
 
 # --- C calling Matlab Engine
 
-add_executable(fengdemo_c fengdemo.c)
-target_include_directories(fengdemo_c PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(fengdemo_c PRIVATE ${Matlab_LIBRARIES})
+add_executable(engdemo_c engdemo.c)
+target_include_directories(engdemo_c PRIVATE ${Matlab_INCLUDE_DIRS})
+target_link_libraries(engdemo_c PRIVATE ${Matlab_LIBRARIES})
 
-add_test(NAME MatlabEngine_C COMMAND fengdemo_c)
-set_tests_properties(MatlabEngine_C PROPERTIES TIMEOUT ${matlab_timeout})
-
+add_test(NAME MatlabEngine_C COMMAND engdemo_c)
 
 # --- Fortran calling Matlab Engine
 
@@ -74,36 +60,29 @@ elseif(NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
 endif()
 
 
-
 if(TestFortranEngine)
-  add_executable(fengdemo_f fengdemo.F90)
-  target_include_directories(fengdemo_f PRIVATE ${Matlab_INCLUDE_DIRS})
-  target_link_libraries(fengdemo_f PRIVATE ${Matlab_LIBRARIES})
+  add_executable(eng_f fengdemo.F90)
+  target_include_directories(eng_f PRIVATE ${Matlab_INCLUDE_DIRS})
+  target_link_libraries(eng_f PRIVATE ${Matlab_LIBRARIES})
 
-  add_test(NAME MatlabEngine_Fortran COMMAND fengdemo_f)
-  set_tests_properties(MatlabEngine_Fortran PROPERTIES TIMEOUT ${matlab_timeout})
+  add_test(NAME MatlabEngine_Fortran COMMAND eng_f)
 endif()
 
 # --- Engine test props
 
-foreach(t MatlabEngine_C MatlabEngine_Fortran)
-
-if(NOT TEST ${t})
-  continue()
-endif()
+get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
+set_tests_properties(${test_names} PROPERTIES TIMEOUT 90)
 
 if(APPLE)
-  set_tests_properties(${t} PROPERTIES
+  set_tests_properties(${test_names} PROPERTIES
   ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARY_DIR}:${Matlab_ROOT_DIR}/sys/os/maci64
   )
 elseif(WIN32)
-  set_tests_properties(${t} PROPERTIES
+  set_tests_properties(${test_names} PROPERTIES
   ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Matlab_BINARY_DIR}
   )
 else()
-  set_tests_properties(${t} PROPERTIES
+  set_tests_properties(${test_names} PROPERTIES
   ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARY_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
   )
 endif()
-
-endforeach()
