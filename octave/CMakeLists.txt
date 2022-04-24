@@ -16,7 +16,6 @@ find_package(Octave COMPONENTS Development)
 if(Octave_Development_FOUND)
   add_executable(octdemo octdemo.cpp)
   target_link_libraries(octdemo Octave::Octave)
-  target_compile_features(octdemo PRIVATE cxx_std_17)
 
   add_test(NAME DevOctave COMMAND $<TARGET_FILE:octdemo>)
 
