@@ -53,66 +53,82 @@ FindOctave checks the environment variable OCTAVE_EXECUTABLE for the
 Octave interpreter.
 #]=======================================================================]
 
-unset(Octave_Development_FOUND)
-unset(Octave_Interpreter_FOUND)
-set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME Interpreter)
-
-set(_hint)
+unset(_hint)
 if(DEFINED ENV{OCTAVE_EXECUTABLE})
   get_filename_component(_hint $ENV{OCTAVE_EXECUTABLE} DIRECTORY)
 endif()
+
+unset(_hint_dir)
+unset(_path)
+unset(_suff)
 if(WIN32)
-  set(_path "$ENV{LocalAppData}/Programs/GNU Octave/")
-  set(_suff
-    Octave-6.1.0/mingw64/bin
-    Octave-6.2.0/mingw64/bin
-    Octave-6.3.0/mingw64/bin
-    Octave-6.4.0/mingw64/bin
-    Octave-7.0.90/mingw64/bin
-    Octave-7.1.0/mingw64/bin
-    )
+  set(_suff mingw64/bin)
+  set(_path "$ENV{ProgramFiles}/GNU Octave")
+  if(IS_DIRECTORY ${_path})
+    file(GLOB_RECURSE _hint_dir "${_path}/Octave-*/mingw64/bin/octave-cli.exe")
+  else()
+    unset(_path)
+  endif()
+endif()
+
+find_program(Octave_CONFIG_EXECUTABLE
+NAMES octave-config
+HINTS ${_hint} ${_hint_dir}
+PATHS ${_path}
+PATH_SUFFIXES ${_suff}
+)
+
+if(Octave_CONFIG_EXECUTABLE)
+  execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p BINDIR
+  OUTPUT_VARIABLE Octave_BINARY_DIR
+  ERROR_QUIET
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  TIMEOUT 5
+  )
+
+  execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p VERSION
+  OUTPUT_VARIABLE Octave_VERSION
+  ERROR_QUIET
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  TIMEOUT 5
+  )
 endif()
 
 if(Development IN_LIST Octave_FIND_COMPONENTS)
-  find_program(Octave_CONFIG_EXECUTABLE
-               NAMES octave-config
-               HINTS ${_hint}
-               PATHS ${_path}
-               PATH_SUFFIXES ${_suff})
 
   if(Octave_CONFIG_EXECUTABLE)
-
-    execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p BINDIR
-                    OUTPUT_VARIABLE Octave_BINARY_DIR
-                    ERROR_QUIET
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-
     execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p OCTINCLUDEDIR
-                    OUTPUT_VARIABLE Octave_INCLUDE_DIR
-                    ERROR_QUIET
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    OUTPUT_VARIABLE Octave_INCLUDE_DIR
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    TIMEOUT 5
+    )
 
     execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p OCTLIBDIR
-                    OUTPUT_VARIABLE Octave_LIB1
-                    ERROR_QUIET
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    OUTPUT_VARIABLE Octave_LIB1
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    TIMEOUT 5
+    )
 
     execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p LIBDIR
-                    OUTPUT_VARIABLE Octave_LIB2
-                    ERROR_QUIET
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    OUTPUT_VARIABLE Octave_LIB2
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    TIMEOUT 5
+    )
   endif(Octave_CONFIG_EXECUTABLE)
 
   find_library(Octave_INTERP_LIBRARY
-              NAMES octinterp
-              HINTS ${Octave_LIB1} ${Octave_LIB2}
-              NAMES_PER_DIR
-            )
+  NAMES octinterp
+  HINTS ${Octave_LIB1} ${Octave_LIB2}
+  NAMES_PER_DIR
+  )
   find_library(Octave_OCTAVE_LIBRARY
-                NAMES octave
-                HINTS ${Octave_LIB1} ${Octave_LIB2}
-                NAMES_PER_DIR
-              )
+  NAMES octave
+  HINTS ${Octave_LIB1} ${Octave_LIB2}
+  NAMES_PER_DIR
+  )
 
   if(Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
     set(Octave_Development_FOUND true)
@@ -124,31 +140,16 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
 
   find_program(Octave_EXECUTABLE
   NAMES octave-cli octave
-  HINTS ${Octave_BINARY_DIR} ${_hint}
+  HINTS ${Octave_BINARY_DIR} ${_hint} ${_hint_dir}
   PATHS ${_path}
   PATH_SUFFIXES ${_suff}
   )
 
+  if(Octave_EXECUTABLE)
+    set(Octave_Interpreter_FOUND true)
+  endif(Octave_EXECUTABLE)
+
 endif()
-
-if(Octave_EXECUTABLE)
-  execute_process(COMMAND ${Octave_EXECUTABLE} --version
-  OUTPUT_VARIABLE Octave_VERSION
-  ERROR_QUIET
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-
-  if(Octave_VERSION MATCHES "GNU Octave, version [0-9]+\\.[0-9]+\\.[0-9]+.*")
-    string(REGEX REPLACE "GNU Octave, version ([0-9]+)\\.[0-9]+\\.[0-9]+.*" "\\1" Octave_VERSION_MAJOR ${Octave_VERSION})
-    string(REGEX REPLACE "GNU Octave, version [0-9]+\\.([0-9]+)\\.[0-9]+.*" "\\1" Octave_VERSION_MINOR ${Octave_VERSION})
-    string(REGEX REPLACE "GNU Octave, version [0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" Octave_VERSION_PATCH ${Octave_VERSION})
-
-    set(Octave_VERSION ${Octave_VERSION_MAJOR}.${Octave_VERSION_MINOR}.${Octave_VERSION_PATCH})
-  endif()
-
-  set(Octave_Interpreter_FOUND true)
-
-endif(Octave_EXECUTABLE)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Octave
@@ -163,9 +164,9 @@ if(Octave_Development_FOUND)
   set(Octave_INCLUDE_DIRS ${Octave_INCLUDE_DIR})
 
   if(NOT TARGET Octave::Octave)
-    add_library(Octave::Octave UNKNOWN IMPORTED)
+    add_library(Octave::Octave INTERFACE IMPORTED)
     set_target_properties(Octave::Octave PROPERTIES
-    IMPORTED_LOCATION ${Octave_OCTAVE_LIBRARY}
+    INTERFACE_LINK_LIBRARIES "${Octave_OCTAVE_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES ${Octave_INCLUDE_DIR}
     )
   endif()
