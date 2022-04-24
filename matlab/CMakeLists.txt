@@ -47,16 +47,12 @@ check_source_compiles(C
 [=[
 #include "engine.h"
 
-#define  BUFSIZE 256
-
-int main(int argc, char* argv[]){
+int main(void){
 	Engine *ep;
 	mxArray *T = NULL;
 
 	ep = engOpen("");
-
 	T = mxCreateDoubleMatrix(1, 10, mxREAL);
-
 	return 0;
 }
 ]=]

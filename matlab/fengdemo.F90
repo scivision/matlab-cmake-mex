@@ -30,7 +30,6 @@ integer :: engPutVariable, engEvalString, engClose
 integer :: temp, status
 mwSize :: i
 real(dp), parameter :: time(N)=[ 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
-character(2) :: argv
 
 character(1000) :: buf
 integer :: ierr, L
@@ -57,18 +56,10 @@ status = engPutVariable(ep, 'T', T)
 
 if (status /= 0) error stop 'engPutVariable failed'
 
-
-
 !     Evaluate a function of time, distance = (1/2)g.*t.^2
 !     (g is the acceleration due to gravity)
 
 if (engEvalString(ep, 'D = .5.*(-9.8).*T.^2;') /= 0) error stop 'engEvalString failed'
-
-
-call get_command_argument(1, argv, status=status)
-if (status==0) then
-  if (argv=='-v') call plot(ep, T, D)
-endif
 
 D = engGetVariable(ep, 'D')
 
@@ -80,33 +71,10 @@ do i=1,size(time)
  print '(2G10.3)', time(i), dist(i)
 enddo
 
-
 call mxDestroyArray(T)
 call mxDestroyArray(D)
 status = engClose(ep)
 
 if (status /= 0) error stop 'engClose failed'
-
-contains
-
-subroutine plot(ep, T, D)
-
-mwPointer, intent(in) :: ep, T, D
-
-if (engEvalString(ep, 'plot(T,D);') /= 0) error stop 'plot failed'
-
-if (engEvalString(ep, 'title(''Position vs. Time'')') /= 0) error stop 'title failed'
-
-if (engEvalString(ep, 'xlabel(''Time (seconds)'')') /= 0) error stop 'xlabel failed'
-
-if (engEvalString(ep, 'ylabel(''Position (meters)'')') /= 0) error stop 'ylabel failed'
-
-! read from console to make sure that we pause long enough to be able to see the plot
-
-call sleep(5)
-
-if (engEvalString(ep, 'close;') /= 0) error stop 'close plot failed'
-
-end subroutine plot
 
 end program
