@@ -51,10 +51,6 @@ if(MEX_C_SRC)
 endif()
 
 # --- C calling Matlab Engine
-if(CMAKE_VERSION VERSION_LESS 3.22)
-  message(STATUS "SKIP: MatlabEngine tests require CMake >= 3.22")
-  return()
-endif()
 
 add_executable(fengdemo_c fengdemo.c)
 target_include_directories(fengdemo_c PRIVATE ${Matlab_INCLUDE_DIRS})

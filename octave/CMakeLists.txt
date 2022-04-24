@@ -19,7 +19,7 @@ if(Octave_Development_FOUND)
 
   add_test(NAME DevOctave COMMAND $<TARGET_FILE:octdemo>)
 
-  if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+  if(WIN32)
     cmake_path(GET Octave_EXECUTABLE PARENT_PATH Octave_DLLPATH)
     set_tests_properties(DevOctave PROPERTIES ENVIRONMENT_MODIFICATION PATH=path_list_append:${Octave_DLLPATH})
   endif()
