@@ -2,8 +2,6 @@
 
 set_directory_properties(PROPERTIES LABELS matlab)
 
-include(CheckSourceCompiles)
-
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MX_LIBRARY MEX_COMPILER)
 if(NOT Matlab_FOUND)
   return()

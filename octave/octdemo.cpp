@@ -3,7 +3,7 @@
 
 
 // http://www.dm.unibo.it/~achilles/calc/octave.html/Standalone-Programs.html
-int main(void)
+int main()
 {
  int n = 2;
  Matrix a_matrix = Matrix (n, n);
