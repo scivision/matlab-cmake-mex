@@ -2,7 +2,7 @@
 #include <oct.h>
 
 
-// http://www.dm.unibo.it/~achilles/calc/octave.html/Standalone-Programs.html
+// https://octave.org/doc/latest/Standalone-Programs.html
 int main()
 {
  int n = 2;
