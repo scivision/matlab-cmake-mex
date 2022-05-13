@@ -15,8 +15,9 @@ COMMAND ${Octave_EXECUTABLE} --eval "oruntests('${CMAKE_CURRENT_SOURCE_DIR}')"
 if(Octave_Development_FOUND)
   add_executable(octdemo octdemo.cpp)
   target_link_libraries(octdemo Octave::Octave)
+  target_compile_features(octdemo PRIVATE cxx_std_11)
 
-  add_test(NAME DevOctave COMMAND $<TARGET_FILE:octdemo>)
+  add_test(NAME DevOctave COMMAND octdemo)
 
   if(WIN32)
     cmake_path(GET Octave_EXECUTABLE PARENT_PATH Octave_DLLPATH)
