@@ -14,6 +14,7 @@ COMMAND ${Octave_EXECUTABLE} --eval "oruntests('${CMAKE_CURRENT_SOURCE_DIR}')"
 # Fortran: https://wiki.octave.org/Fortran
 set(CMAKE_REQUIRED_LIBRARIES ${Octave_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${Octave_INCLUDE_DIRS})
++set(CMAKE_CXX_STANDARD 11)  # need for test with Clang
 check_source_compiles(CXX
 "
 #include <oct.h>
