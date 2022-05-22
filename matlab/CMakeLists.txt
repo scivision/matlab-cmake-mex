@@ -38,7 +38,6 @@ if(MEX_C_SRC)
   # WORKING_DIRECTORY does not work, need addpath()
 endif()
 
-# some systems have Matlab messed up libstdc++. Overriding with system libstdc++ doesn't necessarily help.
 set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
 check_source_compiles(C
@@ -54,10 +53,10 @@ int main(void){
 	return 0;
 }
 ]=]
-Matlab_STDCXX_OK
+Matlab_engine_OK
 )
 
-if(Matlab_STDCXX_OK)
+if(Matlab_engine_OK)
 
 # --- C calling Matlab Engine
 
@@ -89,7 +88,7 @@ if(TestFortranEngine)
   add_test(NAME MatlabEngine_Fortran COMMAND eng_f)
 endif()
 
-endif(Matlab_STDCXX_OK)
+endif(Matlab_engine_OK)
 
 # --- Engine test props
 
