@@ -122,12 +122,10 @@ if(Development IN_LIST Octave_FIND_COMPONENTS)
   find_library(Octave_INTERP_LIBRARY
   NAMES octinterp
   HINTS ${Octave_LIB1} ${Octave_LIB2}
-  NAMES_PER_DIR
   )
   find_library(Octave_OCTAVE_LIBRARY
   NAMES octave
   HINTS ${Octave_LIB1} ${Octave_LIB2}
-  NAMES_PER_DIR
   )
 
   if(Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
@@ -166,7 +164,7 @@ if(Octave_Development_FOUND)
   if(NOT TARGET Octave::Octave)
     add_library(Octave::Octave INTERFACE IMPORTED)
     set_target_properties(Octave::Octave PROPERTIES
-    INTERFACE_LINK_LIBRARIES "${Octave_OCTAVE_LIBRARY}"
+    INTERFACE_LINK_LIBRARIES "${Octave_INTERP_LIBRARY};${Octave_OCTAVE_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES ${Octave_INCLUDE_DIR}
     )
   endif()
