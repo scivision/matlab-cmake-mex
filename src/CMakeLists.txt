@@ -1,32 +1,7 @@
 # https://www.mathworks.com/support/requirements/supported-compilers.html
 include(CheckSourceCompiles)
 
-matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
-
-cmake_path(GET Matlab_MEX_COMPILER PARENT_PATH Matlab_BINARY_DIR)
-
-# --- C++ MEX: called from Matlab
-
-find_file(MEX_C_SRC
-NAMES matrixMultiply.c
-NO_DEFAULT_PATH
-HINTS ${Matlab_ROOT_DIR}/extern/examples/refbook
-)
-
-if(MEX_C_SRC)
-  add_custom_target(matrixMultiply ALL
-  COMMAND ${Matlab_MEX_COMPILER} ${MEX_C_SRC} ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_BINARY_DIR} -lmwblas
-  BYPRODUCTS matrixMultiply.${Matlab_MEX_SUFFIX}
-  )
-
-  # does not work since can't use link flags
-  # matlab_add_mex(NAME matrixMultiply SHARED SRC ${MEX_C_SRC} LINK_TO -lmwblas R2018a)
-
-  add_test(NAME Matlab:BLAS
-  COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_blas'); assertSuccess(r)"
-  )
-  # WORKING_DIRECTORY does not work, need addpath()
-endif()
+# --- C calling Matlab Engine
 
 set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
@@ -47,8 +22,6 @@ Matlab_engine_OK
 )
 
 if(Matlab_engine_OK)
-
-# --- C calling Matlab Engine
 
 add_executable(engdemo_c engdemo.c)
 target_include_directories(engdemo_c PRIVATE ${Matlab_INCLUDE_DIRS})
@@ -85,16 +58,4 @@ endif(Matlab_engine_OK)
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 set_tests_properties(${test_names} PROPERTIES TIMEOUT 90)
 
-if(APPLE)
-  set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARY_DIR}:${Matlab_ROOT_DIR}/sys/os/maci64
-  )
-elseif(WIN32)
-  set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Matlab_BINARY_DIR}
-  )
-else()
-  set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARY_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
-  )
-endif()
+matlab_libpath(${test_names})
