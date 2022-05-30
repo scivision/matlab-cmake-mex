@@ -12,6 +12,20 @@ add_test(NAME Engine_C COMMAND engdemo_c)
 
 endif(Matlab_engine_C)
 
+# --- C++ calling Matlab engine
+
+if(Matlab_engine_CXX)
+
+add_executable(engdemo_cpp eng_demo.cpp)
+target_include_directories(engdemo_cpp PRIVATE ${Matlab_INCLUDE_DIRS})
+target_link_libraries(engdemo_cpp  PRIVATE ${Matlab_LIBRARIES})
+
+# matlab_add_mex(NAME engdemo_cpp EXECUTABLE SRC eng_demo.cpp LINK_TO ${Matlab_LIBRARIES})
+
+add_test(NAME Engine_CPP COMMAND engdemo_cpp)
+
+endif(Matlab_engine_CXX)
+
 # --- Fortran calling Matlab Engine
 
 if(Matlab_engine_Fortran)

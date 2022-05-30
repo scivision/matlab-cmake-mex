@@ -4,7 +4,7 @@ project(MatlabMEX LANGUAGES C CXX Fortran)
 
 enable_testing()
 
-find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MX_LIBRARY MEX_COMPILER REQUIRED)
+find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MAT_LIBRARY MX_LIBRARY MEX_COMPILER REQUIRED)
 
 # --- Matlab paths and libs
 include(cmake/matlab.cmake)
