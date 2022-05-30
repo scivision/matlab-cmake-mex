@@ -18,7 +18,7 @@ if(Matlab_engine_CXX)
 
 add_executable(engdemo_cpp eng_demo.cpp)
 target_include_directories(engdemo_cpp PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(engdemo_cpp  PRIVATE ${Matlab_LIBRARIES})
+target_link_libraries(engdemo_cpp  PRIVATE ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 # matlab_add_mex(NAME engdemo_cpp EXECUTABLE SRC eng_demo.cpp LINK_TO ${Matlab_LIBRARIES})
 
