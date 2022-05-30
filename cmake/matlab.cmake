@@ -28,3 +28,40 @@ else()
 endif()
 
 endfunction(matlab_libpath)
+
+# --- check matlab engine
+# https://www.mathworks.com/support/requirements/supported-compilers.html
+include(CheckSourceCompiles)
+
+set(CMAKE_CXX_STANDARD 11)
+
+set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES})
+set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
+check_source_compiles(C
+[=[
+#include "engine.h"
+
+int main(void){
+	Engine *ep;
+	mxArray *T = NULL;
+
+	ep = engOpen("");
+	T = mxCreateDoubleMatrix(1, 10, mxREAL);
+	return 0;
+}
+]=]
+Matlab_engine_OK
+)
+
+# --- check Fortran engine
+
+set(TestFortranEngine true)
+if(WIN32 OR APPLE)
+  if(NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+    message(STATUS "SKIP: on Windows and MacOS, Matlab Fortran supports only Intel compiler.")
+    set(TestFortranEngine false)
+  endif()
+elseif(NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+  message(STATUS "SKIP: On Linux, Matlab Fortran supports only Gfortran.")
+  set(TestFortranEngine false)
+endif()

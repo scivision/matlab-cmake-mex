@@ -50,6 +50,6 @@ endif()
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 set_tests_properties(${test_names} PROPERTIES TIMEOUT 90)
 
-matlab_libpath(${test_names})
+matlab_libpath("${test_names}")
 
 add_subdirectory(src)
