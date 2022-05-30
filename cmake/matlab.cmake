@@ -33,13 +33,10 @@ endfunction(matlab_libpath)
 # https://www.mathworks.com/support/requirements/supported-compilers.html
 include(CheckSourceCompiles)
 
-
-set(CMAKE_CXX_STANDARD 11)
-
 set(CMAKE_REQUIRED_LIBRARIES ${Matlab_ENG_LIBRARY} ${Matlab_MX_LIBRARY})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
 
-check_source_compiles(CXX
+check_source_compiles(C
 [=[
 #include "engine.h"
 
@@ -52,7 +49,7 @@ int main(){
 	return 0;
 }
 ]=]
-Matlab_engine_OK
+Matlab_engine_C
 )
 
 # --- check Fortran engine

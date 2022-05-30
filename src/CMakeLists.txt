@@ -1,13 +1,17 @@
 # --- C calling Matlab Engine
 
-if(NOT Matlab_engine_OK)
+if(NOT Matlab_engine_C)
   message(STATUS "SKIP: Matlab engine tests")
   return()
 endif()
 
 add_executable(engdemo_c engdemo.c)
 target_include_directories(engdemo_c PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(engdemo_c PRIVATE ${Matlab_LIBRARIES})
+target_link_libraries(engdemo_c PRIVATE ${Matlab_ENG_LIBRARY} ${Matlab_MX_LIBRARY})
+
+# matlab_add_mex(NAME engdemo_c EXECUTABLE SRC engdemo.c LINK_TO ${Matlab_LIBRARIES})
+
+
 
 add_test(NAME MatlabEngine_C COMMAND engdemo_c)
 

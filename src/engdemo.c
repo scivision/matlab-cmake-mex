@@ -7,9 +7,10 @@
  * Copyright 1984-2016 The MathWorks, Inc.
  * All rights reserved
  */
-#include <stdlib.h>
+
 #include <stdio.h>
 #include <string.h>
+
 #include "engine.h"
 
 #define  BUFSIZE 256
@@ -52,5 +53,8 @@ int main(int argc, char* argv[]){
 
 	engClose(ep);
 
-	return EXIT_SUCCESS;
+	return 0;
 }
+
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){}
+/* https://www.mathworks.com/help/matlab/matlab_external/symbol-mexfunction-unresolved-or-not-defined.html */
