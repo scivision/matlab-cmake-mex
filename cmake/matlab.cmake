@@ -49,24 +49,26 @@ Matlab_engine_C
 
 # --- check C++ engine
 
-if(NOT DEFINED Matlab_engine_CXX)
-  message(CHECK_START "Performing Test Matlab_engine_CXX")
-  try_compile(_engine_CXX
-  ${CMAKE_CURRENT_BINARY_DIR}/engine_cxx
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/eng_demo.cpp
-  CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:PATH=${Matlab_INCLUDE_DIRS}"
-  LINK_LIBRARIES ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT}
-  OUTPUT_VARIABLE err
-  )
-  if(_engine_CXX)
-    set(Matlab_engine_CXX true CACHE BOOL "Matlab CXX engine")
-    message(CHECK_PASS "Success")
-  else()
-    set(Matlab_engine_CXX false CACHE BOOL "Matlab CXX engine")
-    message(CHECK_FAIL "Failed")
-    message(STATUS "${err}")
-  endif()
-endif()
+set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+check_source_compiles(CXX
+[=[
+#include "MatlabDataArray.hpp"
+#include "MatlabEngine.hpp"
+
+int main() {
+    using namespace matlab::engine;
+    std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
+    matlab::data::ArrayFactory factory;
+
+    // Create variables
+    matlab::data::TypedArray<double> data = factory.createArray<double>({ 1, 10 },
+        { 4, 8, 6, -1, -2, -3, -1, 3, 4, 5 });
+
+    return EXIT_SUCCESS;
+}
+]=]
+Matlab_engine_CXX)
 
 # --- check Fortran engine
 
