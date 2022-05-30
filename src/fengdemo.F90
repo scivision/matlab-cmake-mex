@@ -1,12 +1,5 @@
 #include "fintrf.h"
 
-#if 0
-
-!     fengdemo.F
-!     .F file need to be preprocessed to generate .for equivalent
-
-#endif
-
 !     fengdemo.f
 !
 !     This is a simple program that illustrates how to call the MATLAB
@@ -21,12 +14,12 @@ use, intrinsic :: iso_fortran_env, only: dp=>real64
 
 implicit none
 
-mwPointer engOpen, engGetVariable, mxCreateDoubleMatrix
-mwPointer mxGetDoubles
+mwPointer, external :: engOpen, engGetVariable, mxCreateDoubleMatrix
+mwPointer, external :: mxGetDoubles
 mwPointer :: ep, T, D
 mwSize, parameter :: M=1, N=10
 real(dp) ::  dist(N)
-integer :: engPutVariable, engEvalString, engClose
+integer, external :: engPutVariable, engEvalString, engClose
 integer :: temp, status
 mwSize :: i
 real(dp), parameter :: time(N)=[ 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]

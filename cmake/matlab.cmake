@@ -50,28 +50,21 @@ if((WIN32 OR APPLE) AND NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
 elseif(UNIX AND NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   message(STATUS "SKIP: On Linux, Matlab Engine Fortran supports only Gfortran.")
   set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
-else()
-  check_source_compiles(Fortran
-  [=[
-  #include "fintrf.h"
-
-  program main
-
-  implicit none (type,external)
-
-  mwPointer, external :: engOpen, mxCreateDoubleMatrix
-  mwPointer :: ep, T
-  integer, external :: engClose
-  integer :: status
-
-  ep = engOpen("")
-
-  T = mxCreateDoubleMatrix(2, 1, 0)
-
-  status = engClose(ep)
-
-  end program
-  ]=]
-  Matlab_engine_Fortran
+elseif(NOT DEFINED Matlab_engine_Fortran)
+  message(CHECK_START "Performing Test Matlab_engine_Fortran")
+  try_compile(Matlab_engine_Fortran
+  ${CMAKE_CURRENT_BINARY_DIR}/engine_fortran
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/fengdemo.F90
+  CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:PATH=${Matlab_INCLUDE_DIRS}"
+  LINK_LIBRARIES ${Matlab_ENG_LIBRARY} ${Matlab_MX_LIBRARY}
+  OUTPUT_VARIABLE err
   )
+  if(Matlab_engine_Fortran)
+    set(Matlab_engine_Fortran true CACHE BOOL "Matlab Fortran engine")
+    message(CHECK_PASS "Success")
+  else()
+    set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
+    message(CHECK_FAIL "Failed")
+    message(STATUS "${err}")
+  endif()
 endif()
