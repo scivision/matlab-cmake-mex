@@ -20,7 +20,7 @@ elseif(WIN32)
   )
 else()
   set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
+  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_EXTERN_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
   )
 endif()
 
