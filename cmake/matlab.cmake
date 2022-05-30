@@ -1,21 +1,11 @@
 matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
 
-if(APPLE)
-  set(MATLAB_ARCH maci64)
-elseif(WIN32)
-  set(MATLAB_ARCH win64)
-elseif(UNIX)
-  set(MATLAB_ARCH glnxa64)
-else()
-  message(FATAL_ERROR "Unknown platform")
-endif()
-
 
 function(matlab_libpath test_names)
 
 if(APPLE)
   set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/${MATLAB_ARCH}
+  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}
   )
 elseif(WIN32)
   set_tests_properties(${test_names} PROPERTIES
@@ -23,7 +13,7 @@ elseif(WIN32)
   )
 else()
   set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/${MATLAB_ARCH}
+  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
   )
 endif()
 
@@ -54,13 +44,34 @@ Matlab_engine_C
 
 # --- check Fortran engine
 
-set(TestFortranEngine true)
-if(WIN32 OR APPLE)
-  if(NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-    message(STATUS "SKIP: on Windows and MacOS, Matlab Fortran supports only Intel compiler.")
-    set(TestFortranEngine false)
-  endif()
-elseif(NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  message(STATUS "SKIP: On Linux, Matlab Fortran supports only Gfortran.")
-  set(TestFortranEngine false)
+if((WIN32 OR APPLE) AND NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+  message(STATUS "SKIP: on Windows and MacOS, Matlab Engine Fortran supports only Intel compiler.")
+  set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
+elseif(UNIX AND NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+  message(STATUS "SKIP: On Linux, Matlab Engine Fortran supports only Gfortran.")
+  set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
+else()
+  check_source_compiles(Fortran
+  [=[
+  #include "fintrf.h"
+
+  program main
+
+  implicit none (type,external)
+
+  mwPointer, external :: engOpen, mxCreateDoubleMatrix
+  mwPointer :: ep, T
+  integer, external :: engClose
+  integer :: status
+
+  ep = engOpen("")
+
+  T = mxCreateDoubleMatrix(2, 1, 0)
+
+  status = engClose(ep)
+
+  end program
+  ]=]
+  Matlab_engine_Fortran
+  )
 endif()

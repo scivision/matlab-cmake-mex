@@ -11,7 +11,7 @@ include(cmake/matlab.cmake)
 
 # --- Matlab script
 
-add_test(NAME Matlab_script
+add_test(NAME script
 COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_true'); assertSuccess(r)"
 )
 
@@ -38,7 +38,7 @@ if(MEX_C_SRC AND MEX_BLAS)
 
   matlab_add_mex(NAME matrixMultiply SHARED SRC ${MEX_C_SRC} LINK_TO ${MEX_BLAS})
 
-  add_test(NAME Matlab:BLAS
+  add_test(NAME BLAS
   COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', 'Name', 'TestDemo/test_blas'); assertSuccess(r)"
   )
   # WORKING_DIRECTORY does not work, need addpath()
