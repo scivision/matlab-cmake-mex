@@ -16,11 +16,16 @@ endif(Matlab_engine_C)
 
 if(Matlab_engine_CXX)
 
-add_executable(engdemo_cpp eng_demo.cpp)
-target_include_directories(engdemo_cpp PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(engdemo_cpp  PRIVATE ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+# add_executable(engdemo_cpp eng_demo.cpp)
+# target_include_directories(engdemo_cpp PRIVATE ${Matlab_INCLUDE_DIRS})
+# target_link_libraries(engdemo_cpp  PRIVATE ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 # matlab_add_mex(NAME engdemo_cpp EXECUTABLE SRC eng_demo.cpp LINK_TO ${Matlab_LIBRARIES})
+
+add_custom_target(engdemo_cpp ALL
+COMMAND ${Matlab_MEX_COMPILER} -client engine ${CMAKE_CURRENT_SOURCE_DIR}/eng_demo.cpp
+BYPRODUCTS engdemo_cpp${CMAKE_EXECUTABLE_SUFFIX}
+)
 
 add_test(NAME Engine_CPP COMMAND engdemo_cpp)
 
