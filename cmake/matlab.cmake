@@ -37,11 +37,11 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
-check_source_compiles(C
+check_source_compiles(CXX
 [=[
 #include "engine.h"
 
-int main(void){
+int main(){
 	Engine *ep;
 	mxArray *T = NULL;
 
