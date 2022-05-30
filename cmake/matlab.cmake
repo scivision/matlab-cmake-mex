@@ -16,7 +16,7 @@ if(APPLE)
   )
 elseif(WIN32)
   set_tests_properties(${test_names} PROPERTIES
-  ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Matlab_BINARIES_DIR}
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${Matlab_BINARIES_DIR};PATH=path_list_prepend:${Matlab_EXTERN_BINARIES_DIR}"
   )
 else()
   set_tests_properties(${test_names} PROPERTIES
