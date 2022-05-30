@@ -36,24 +36,7 @@ include(CheckSourceCompiles)
 
 set(CMAKE_CXX_STANDARD 11)
 
-check_source_compiles(CXX
-"
-#include <sstream>
-
-int main(){
-  std::stringstream s1,s2;
-  s1.swap(s2);
-  return EXIT_SUCCESS;
-}
-"
-COMPILER_CXX11_OK
-)
-
-if(NOT COMPILER_CXX11_OK)
-  message(WARNING "Problem with C++11 and ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
-endif()
-
-set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES})
+set(CMAKE_REQUIRED_LIBRARIES ${Matlab_ENG_LIBRARY} ${Matlab_MX_LIBRARY})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
 
 check_source_compiles(CXX
