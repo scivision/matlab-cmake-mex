@@ -26,11 +26,11 @@ endif()
 
 endfunction(matlab_libpath)
 
-# --- check C engine
 
 set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
 
+# --- check C engine
 check_source_compiles(C
 [=[
 #include "engine.h"
@@ -48,8 +48,6 @@ Matlab_engine_C
 )
 
 # --- check C++ engine
-
-set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 check_source_compiles(CXX
 [=[
@@ -72,29 +70,20 @@ Matlab_engine_CXX)
 
 # --- check Fortran engine
 
-if(NOT DEFINED Matlab_engine_Fortran)
-  if((WIN32 OR APPLE) AND NOT CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-    message(STATUS "SKIP: on Windows and MacOS, Matlab Engine Fortran supports only Intel compiler.")
-    set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
-  elseif(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-    message(STATUS "SKIP: On Linux, Matlab Engine Fortran supports only Gfortran.")
-    set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
-  else()
-    message(CHECK_START "Performing Test Matlab_engine_Fortran")
-    try_compile(Matlab_engine_Fortran
-    ${CMAKE_CURRENT_BINARY_DIR}/engine_fortran
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/eng_demo.F90
-    CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:PATH=${Matlab_INCLUDE_DIRS}"
-    LINK_LIBRARIES ${Matlab_ENG_LIBRARY} ${Matlab_MX_LIBRARY}
-    OUTPUT_VARIABLE err
-    )
-    if(Matlab_engine_Fortran)
-      set(Matlab_engine_Fortran true CACHE BOOL "Matlab Fortran engine")
-      message(CHECK_PASS "Success")
-    else()
-      set(Matlab_engine_Fortran false CACHE BOOL "Matlab Fortran engine")
-      message(CHECK_FAIL "Failed")
-      message(STATUS "${err}")
-    endif()
-  endif()
-endif()
+check_source_compiles(Fortran
+[=[
+#include "fintrf.h"
+program main
+implicit none
+mwPointer, external :: engOpen, engGetVariable, mxCreateDoubleMatrix
+mwPointer, external :: mxGetDoubles
+mwSize, parameter :: M=1
+mwPointer :: ep, T
+integer, external :: engPutVariable, engEvalString, engClose
+
+ep = engOpen("")
+T = mxCreateDoubleMatrix(1, 1, 0)
+end program
+]=]
+Matlab_engine_Fortran
+)
