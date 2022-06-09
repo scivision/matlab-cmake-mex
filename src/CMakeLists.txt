@@ -34,7 +34,7 @@ endif(Matlab_engine_CXX)
 # --- Fortran calling Matlab Engine
 
 if(Matlab_engine_Fortran)
-  add_executable(eng_f fengdemo.F90)
+  add_executable(eng_f eng_demo.F90)
   target_include_directories(eng_f PRIVATE ${Matlab_INCLUDE_DIRS})
   target_link_libraries(eng_f PRIVATE ${Matlab_LIBRARIES})
 
