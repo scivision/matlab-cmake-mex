@@ -19,6 +19,16 @@ cmake --build build
 ctest --test-dir build
 ```
 
+## Apple Silicon
+
+If using x86 Matlab on Apple Silicon CPU, you will need to configure with:
+
+```sh
+cmake -B build -DCMAKE_OSX_ARCHITECTURES=x86_64
+```
+
+In general it's better overall for Matlab to use the native ARM, which may be coming in Matlab R2022b or later.
+
 ## Reference
 
 * [C Engine](https://www.mathworks.com/help/matlab/calling-matlab-engine-from-c-programs-1.html)
