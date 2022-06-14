@@ -1,6 +1,9 @@
 build*/
 
 *.mex*
+*.exe
+*.exp
+*.lib
 
 CMakeLists.txt.user
 CMakeCache.txt
