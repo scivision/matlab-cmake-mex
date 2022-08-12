@@ -11,15 +11,15 @@ matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
 function(matlab_libpath test_names)
 
 if(APPLE)
-  set_tests_properties(${test_names} PROPERTIES
+  set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}
   )
 elseif(WIN32)
-  set_tests_properties(${test_names} PROPERTIES
+  set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${Matlab_BINARIES_DIR};PATH=path_list_prepend:${Matlab_EXTERN_BINARIES_DIR}"
   )
 else()
-  set_tests_properties(${test_names} PROPERTIES
+  set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_EXTERN_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
   )
 endif()
@@ -35,7 +35,7 @@ check_source_compiles(C
 [=[
 #include "engine.h"
 
-int main(){
+int main(void){
 	Engine *ep;
 	mxArray *T = NULL;
 
@@ -51,6 +51,7 @@ Matlab_engine_C
 
 check_source_compiles(CXX
 [=[
+#include <cstdlib>
 #include "MatlabDataArray.hpp"
 #include "MatlabEngine.hpp"
 

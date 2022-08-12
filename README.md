@@ -21,7 +21,7 @@ ctest --test-dir build
 
 ## Apple Silicon
 
-If using x86 Matlab on Apple Silicon CPU, you will need to configure with:
+If using x86 Matlab on Apple Silicon CPU, configure with:
 
 ```sh
 cmake -B build -DCMAKE_OSX_ARCHITECTURES=x86_64
