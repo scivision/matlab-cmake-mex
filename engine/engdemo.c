@@ -9,6 +9,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "engine.h"
@@ -25,7 +26,7 @@ int main(int argc, char* argv[]){
 	 * Call engOpen with a NULL string. This starts a MATLAB process
      * on the current host using the command "matlab".
 	 */
-	if (!(ep = engOpen(""))) {
+	if (!(ep = engOpen(NULL))) {
 		fprintf(stderr, "\nCan't start MATLAB engine\n");
 		return EXIT_FAILURE;
 	}

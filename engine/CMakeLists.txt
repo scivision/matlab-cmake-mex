@@ -1,3 +1,5 @@
+set_property(DIRECTORY PROPERTY LABELS engine)
+
 # --- C calling Matlab Engine
 
 if(Matlab_engine_C)
