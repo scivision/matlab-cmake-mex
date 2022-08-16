@@ -1,6 +1,7 @@
 # Matlab CMake MEX
 
-Examples of Matlab with CMAKE and MEX producing accelerated Matlab code
+Examples of Matlab with CMAKE and MEX producing accelerated Matlab code via
+[Matlab supported compilers](https://www.mathworks.com/support/requirements/supported-compilers.html).
 
 One-time setup from Matlab:
 
