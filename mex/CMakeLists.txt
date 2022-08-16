@@ -30,7 +30,9 @@ if(BLAS_SRC AND MEX_BLAS)
   # )
 
   matlab_add_mex(NAME matrixMultiply SHARED SRC ${BLAS_SRC} LINK_TO ${MEX_BLAS})
+
   set_property(TARGET matrixMultiply PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  set_property(TARGET matrixMultiply PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   add_test(NAME BLAS
   COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas'); assertSuccess(r)"
@@ -49,7 +51,9 @@ PATHS ${Matlab_ROOT_DIR}/extern/examples/cpp_mex
 
 if(array_src)
   matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
+
   set_property(TARGET arrayProduct PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  set_property(TARGET arrayProduct PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   add_test(NAME CppArray
   COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array'); assertSuccess(r)"
@@ -76,6 +80,7 @@ if(matsq_src AND Matlab_engine_Fortran)
   # )
 
   # set_property(TARGET matsq PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  # set_property(TARGET matsq PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   # add_test(NAME FortranMex
   # COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex'); assertSuccess(r)"
