@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(Threads)
 
 matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
-
+message(VERBOSE "MEX suffix: ${Matlab_MEX_SUFFIX}")
 
 function(matlab_libpath test_names)
 
