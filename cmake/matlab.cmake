@@ -12,15 +12,15 @@ function(matlab_libpath test_names)
 
 if(APPLE)
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}
+  ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR};PATH=path_list_prepend:${Matlab_ROOT_DIR}/bin"
   )
 elseif(WIN32)
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${Matlab_BINARIES_DIR};PATH=path_list_prepend:${Matlab_EXTERN_BINARIES_DIR}"
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${Matlab_BINARIES_DIR};PATH=path_list_prepend:${Matlab_EXTERN_BINARIES_DIR};PATH=path_list_prepend:${Matlab_ROOT_DIR}/bin"
   )
 else()
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_EXTERN_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${Matlab_BINARIES_DIR}:${Matlab_EXTERN_BINARIES_DIR}:${Matlab_ROOT_DIR}/sys/os/glnxa64;PATH=path_list_prepend:${Matlab_ROOT_DIR}/bin"
   )
 endif()
 
