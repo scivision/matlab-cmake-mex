@@ -4,7 +4,7 @@ project(MatlabMEX LANGUAGES C CXX Fortran)
 
 enable_testing()
 
-set(MATLAB_FIND_DEBUG true)
+# set(MATLAB_FIND_DEBUG true)
 
 # --- auto-ignore build directory
 if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)

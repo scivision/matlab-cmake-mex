@@ -1,6 +1,6 @@
 # Matlab CMake MEX
 
-Examples of Matlab with CMAKE and MEX producing accelerated Matlab code via
+Examples of Matlab MEX and Matlab Engine via CMake using
 [Matlab supported compilers](https://www.mathworks.com/support/requirements/supported-compilers.html).
 
 One-time setup from Matlab:
@@ -19,6 +19,11 @@ cmake --build build
 
 ctest --test-dir build
 ```
+
+## Matlab Engine
+
+Matlab Engine is available from several languages including C, C++, Fortran, Python, ...
+Note that even for compiled Matlab Engine programs, the appropriate "matlab" executable must be in environment variable PATH.
 
 ## Apple Silicon
 

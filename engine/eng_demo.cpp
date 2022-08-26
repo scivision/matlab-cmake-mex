@@ -8,8 +8,12 @@
 int main() {
     using namespace matlab::engine;
 
+    //save startup time
+    std::vector<String> optionVec;
+    optionVec.push_back(u"-nojvm");
+
     // Start MATLAB engine synchronously
-    std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
+    std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB(optionVec);
 
     //Create MATLAB data array factory
     // https://www.mathworks.com/help/matlab/matlab-data-array.html
@@ -33,6 +37,9 @@ int main() {
 
     // Get the result
     matlab::data::TypedArray<double> const A = matlabPtr->getVariable(u"A");
+
+    // Terminate MATLAB session -- this made Matlab hang
+    //matlab::engine::terminateEngineClient();
 
     // Display the result
     int i = 0;
