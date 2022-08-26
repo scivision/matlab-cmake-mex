@@ -22,13 +22,13 @@ ctest --test-dir build
 
 ## Apple Silicon
 
-If using x86 Matlab on Apple Silicon CPU, configure with:
+If using x86 Matlab on Apple Silicon CPU via Rosetta, configure with:
 
 ```sh
 cmake -B build -DCMAKE_OSX_ARCHITECTURES=x86_64
 ```
 
-In general it's better overall for Matlab to use the native ARM, which may be coming in Matlab R2022b or later.
+In general it's better overall for Matlab to use the native ARM version if available for your operating system.
 
 ## Reference
 
