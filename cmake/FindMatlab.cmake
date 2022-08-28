@@ -85,8 +85,8 @@ Module Input Variables
 Users or projects may set the following variables to configure the module
 behavior:
 
-:variable:`Matlab_ROOT_DIR`
-  the root of the Matlab installation.
+:variable:`Matlab_ROOT`
+  the root of the Matlab installation (above bin/matlab).
 :variable:`MATLAB_FIND_DEBUG`
   outputs debug information
 :variable:`MATLAB_ADDITIONAL_VERSIONS`
@@ -1575,6 +1575,13 @@ endfunction()
 
 # this variable will get all Matlab installations found in the current system.
 set(_matlab_possible_roots)
+
+if(NOT Matlab_ROOT AND DEFINED ENV{Matlab_ROOT})
+  set(Matlab_ROOT $ENV{Matlab_ROOT})
+endif()
+if(DEFINED Matlab_ROOT)
+  set(Matlab_ROOT_DIR ${Matlab_ROOT})
+endif()
 
 if(Matlab_ROOT_DIR)
   # if the user specifies a possible root, we keep this one
