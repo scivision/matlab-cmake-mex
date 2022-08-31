@@ -37,6 +37,8 @@ In general it's better overall for Matlab to use the native ARM version if avail
 
 ## Reference
 
+Matlab MEX compiler appears to ignore "FFLAGS" environment variable conventionally used for passing Fortran compiler flags. This becomes an issue when needing "-fallow-invalid-box" for GCC > 10. Newer Matlab versions pass this flag for every Gfortran MEX.
+
 * [C Engine](https://www.mathworks.com/help/matlab/calling-matlab-engine-from-c-programs-1.html)
 * [C++ Engine](https://www.mathworks.com/help/matlab/calling-matlab-engine-from-cpp-programs.html)
 * [Fortran engine](https://www.mathworks.com/help/matlab/calling-matlab-engine-from-fortran-programs.html)
