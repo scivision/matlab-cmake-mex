@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.22...3.25)
 
-project(MatlabMEX LANGUAGES C CXX Fortran)
+project(MatlabMEX LANGUAGES C CXX)
 
 enable_testing()
+
+option(fortran "use fortran language too" on)
+
+if(fortran)
+  enable_language(Fortran)
+endif()
 
 # set(MATLAB_FIND_DEBUG true)
 

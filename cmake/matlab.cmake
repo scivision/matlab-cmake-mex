@@ -3,6 +3,11 @@ include(CheckSourceCompiles)
 
 set(CMAKE_CXX_STANDARD 11)
 
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
+  CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+  add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-invalid-boz>)
+endif()
+
 find_package(Threads)
 
 # MEX BLAS may need to be linked for targets using BLAS
@@ -130,6 +135,9 @@ if(array_src)
 endif()
 
 # --- check Fortran engine
+if(NOT fortran)
+  return()
+endif()
 
 check_source_compiles(Fortran
 [=[
