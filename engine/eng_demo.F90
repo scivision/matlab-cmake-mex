@@ -10,6 +10,7 @@
 
 
 program main
+
 use, intrinsic :: iso_fortran_env, only: dp=>real64
 
 implicit none
@@ -35,6 +36,9 @@ if (ep == 0) then
 
   call get_environment_variable("DYLD_LIBRARY_PATH", buf, length=L, status=ierr)
   if(ierr == 0 .and. L > 0) print *, "DYLD_LIBRARY_PATH: " // trim(buf)
+
+  call get_environment_variable("PATH", buf, length=L, status=ierr)
+  if(ierr == 0 .and. L > 0) print *, "PATH: " // trim(buf)
 
   error stop 'Cannot start MATLAB engine'
 endif
