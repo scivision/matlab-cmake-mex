@@ -10,12 +10,17 @@ tc.verifyEqual(x, a*b)
 end
 
 function test_cpp_array(tc)
+
+tc.assumeEqual(exist('arrayProduct'), 3, 'C++ arrayProduct MEX not compiled') %#ok<*EXIST>
+
 a = eye(3);
 x = arrayProduct(2, a);
 tc.verifyEqual(x, 2*a)
 end
 
 function test_fortran_mex(tc)
+
+tc.assumeEqual(exist('matsq'), 3, 'Fortran matsq MEX not compiled')
 
 a = eye(3);
 x = matsq(a);

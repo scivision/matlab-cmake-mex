@@ -24,5 +24,5 @@ end
 end
 
 function testTask(~)
-assertSuccess(runtests)
+assertSuccess(runtests('mex/'))
 end
