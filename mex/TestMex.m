@@ -3,6 +3,9 @@ classdef TestMex < matlab.unittest.TestCase
 methods(Test)
 
 function test_blas(tc)
+
+tc.assumeEqual(exist('matrixMultiply'), 3, 'C matrixMultiply MEX not compiled') %#ok<*EXIST>
+
 a = eye(3);
 b = magic(3);
 x = matrixMultiply(a, b);

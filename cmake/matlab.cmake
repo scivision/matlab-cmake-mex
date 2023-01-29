@@ -1,6 +1,8 @@
 # https://www.mathworks.com/support/requirements/supported-compilers.html
 include(CheckSourceCompiles)
 
+# set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO "STDOUT")
+
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_definitions($<$<AND:$<BOOL:${MSVC}>,$<COMPILE_LANGUAGE:C,CXX>>:_CRT_SECURE_NO_WARNINGS>)
@@ -27,8 +29,8 @@ PATHS ${Matlab_EXTERN_LIBRARY_DIR} ${Matlab_BINARIES_DIR}
 PATH_SUFFIXES ${_matlab_libdir_suffix}
 )
 
-# matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
-# message(VERBOSE "MEX suffix: ${Matlab_MEX_SUFFIX}")
+matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
+message(VERBOSE "MEX suffix: ${Matlab_MEX_SUFFIX}")
 
 function(matlab_libpath test_names)
 
@@ -57,7 +59,7 @@ endif()
 
 message(CHECK_START "Check Matlab MEX ${lang}")
 execute_process(
-COMMAND ${Matlab_MEX_COMPILER} ${src_file} ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_EXTERN_LIBRARY_DIR}
+COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_EXTERN_LIBRARY_DIR} ${src_file}
 TIMEOUT 30
 RESULT_VARIABLE ret
 ERROR_VARIABLE err
@@ -67,7 +69,10 @@ if(ret EQUAL 0)
   message(CHECK_PASS "Success")
   set(Matlab_mex_${lang} true CACHE BOOL "Matlab Mex ${lang} OK")
 else()
-  message(CHECK_FAIL "Failed: ${err}")
+  message(CHECK_FAIL "Failed: ${src_file}
+  ${ret}
+  ${out}
+  ${err}")
   set(Matlab_mex_${lang} false CACHE BOOL "Matlab Mex ${lang} not working")
 endif()
 

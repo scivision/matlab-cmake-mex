@@ -15,14 +15,13 @@ if(matmul_src AND Matlab_MEX_BLAS AND Matlab_mex_C)
   # BYPRODUCTS matrixMultiply.${Matlab_MEX_SUFFIX}
   # )
 
-  matlab_add_mex(NAME matrixMultiply SHARED SRC ${matmul_src} LINK_TO ${Matlab_MEX_BLAS})
+matlab_add_mex(NAME matrixMultiply SHARED SRC ${matmul_src} LINK_TO ${Matlab_MEX_BLAS})
 
-  set_property(TARGET matrixMultiply PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  set_property(TARGET matrixMultiply PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME C_MEX_BLAS
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas'); assertSuccess(r)"
+)
+set_property(TEST C_MEX_BLAS PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/matrixMultiply.${Matlab_MEX_SUFFIX})
 
-  add_test(NAME C_MEX_BLAS
-  COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas'); assertSuccess(r)"
-  )
 endif()
 
 # --- C++ Mex called from Matlab
@@ -34,14 +33,14 @@ PATHS ${Matlab_ROOT_DIR}/extern/examples/cpp_mex
 )
 
 if(array_src AND Matlab_mex_CXX)
-  matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
 
-  set_property(TARGET arrayProduct PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  set_property(TARGET arrayProduct PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
 
-  add_test(NAME CXX_MEX_Array
-  COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array'); assertSuccess(r)"
-  )
+add_test(NAME CXX_MEX_Array
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array'); assertSuccess(r)"
+)
+set_property(TEST CXX_MEX_Array PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/arrayProduct.${Matlab_MEX_SUFFIX})
+
 endif()
 
 # --- Fortran Mex called from Matlab
@@ -54,20 +53,17 @@ PATHS ${Matlab_ROOT_DIR}/extern/examples/refbook
 
 if(matsq_src AND Matlab_mex_Fortran)
 
-  matlab_add_mex(NAME matsq SHARED SRC ${matsq_src})
+matlab_add_mex(NAME matsq SHARED SRC ${matsq_src})
 
-  set_property(TARGET matsq PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  set_property(TARGET matsq PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
-  add_test(NAME FortranMex
-  COMMAND ${Matlab_MAIN_PROGRAM} -batch "r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex'); assertSuccess(r)"
-  )
+add_test(NAME FortranMex
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex'); assertSuccess(r)"
+)
+set_property(TEST FortranMex PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/matsq.${Matlab_MEX_SUFFIX})
 
 endif()
 
 
 # --- properties
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-set_property(TEST ${test_names} PROPERTY TIMEOUT 90)
 
 matlab_libpath("${test_names}")

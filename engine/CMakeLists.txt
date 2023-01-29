@@ -46,6 +46,7 @@ endif(Matlab_engine_Fortran)
 # --- Engine test props
 
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-set_property(TEST ${test_names} PROPERTY TIMEOUT 90)
+set_property(TEST ${test_names} PROPERTY RESOURCE_LOCK mengine)
+# seems to intermittently crash if multiple engines running at once
 
 matlab_libpath("${test_names}")
