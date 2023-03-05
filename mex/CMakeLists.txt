@@ -17,9 +17,7 @@ if(matmul_src AND Matlab_MEX_BLAS AND Matlab_mex_C)
 matlab_add_mex(NAME matrixMultiply SHARED SRC ${matmul_src} LINK_TO ${Matlab_MEX_BLAS})
 
 file(GENERATE OUTPUT CmexBatch.m CONTENT
-"addpath('$<TARGET_FILE_DIR:matrixMultiply>')
-
-r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas');
+"r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas');
 
 if sum(r.Incomplete) > 0
   fprintf(2, 'WARNING: Some tests were skipped.\\n')
@@ -33,7 +31,7 @@ assertSuccess(r)
 )
 
 add_test(NAME C_MEX_BLAS
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), CmexBatch"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}','$<TARGET_FILE_DIR:matrixMultiply>'), CmexBatch"
 )
 
 endif()
@@ -51,9 +49,7 @@ if(array_src AND Matlab_mex_CXX)
 matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
 
 file(GENERATE OUTPUT CXXmexBatch.m CONTENT
-"addpath('$<TARGET_FILE_DIR:arrayProduct>')
-
-r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array');
+"r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array');
 
 if sum(r.Incomplete) > 0
   fprintf(2, 'WARNING: Some tests were skipped.\\n')
@@ -67,7 +63,7 @@ assertSuccess(r)
 )
 
 add_test(NAME CXX_MEX_Array
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), CXXmexBatch"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}','$<TARGET_FILE_DIR:arrayProduct>'), CXXmexBatch"
 )
 
 endif()
@@ -85,9 +81,7 @@ if(matsq_src AND Matlab_mex_Fortran)
 matlab_add_mex(NAME matsq SHARED SRC ${matsq_src})
 
 file(GENERATE OUTPUT FortranMexBatch.m CONTENT
-"addpath('$<TARGET_FILE_DIR:matsq>')
-
-r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex');
+"r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex');
 
 if sum(r.Incomplete) > 0
   fprintf(2, 'WARNING: Some tests were skipped.\\n')
@@ -101,7 +95,7 @@ assertSuccess(r)
 )
 
 add_test(NAME FortranMex
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), FortranMexBatch"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}','$<TARGET_FILE_DIR:matsq>'), FortranMexBatch"
 )
 
 endif()
