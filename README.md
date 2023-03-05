@@ -1,5 +1,7 @@
 # Matlab CMake MEX
 
+[![matlab](https://github.com/scivision/matlab-cmake-mex/actions/workflows/ci.yml/badge.svg)](https://github.com/scivision/matlab-cmake-mex/actions/workflows/ci.yml)
+
 Examples of Matlab MEX and Matlab Engine via CMake using
 [Matlab supported compilers](https://www.mathworks.com/support/requirements/supported-compilers.html).
 
