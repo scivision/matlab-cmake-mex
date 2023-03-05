@@ -1,6 +1,8 @@
 # https://www.mathworks.com/support/requirements/supported-compilers.html
 include(CheckSourceCompiles)
 
+# set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDOUT)
+
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_definitions($<$<AND:$<BOOL:${MSVC}>,$<COMPILE_LANGUAGE:C,CXX>>:_CRT_SECURE_NO_WARNINGS>)
@@ -22,21 +24,26 @@ endif()
 
 find_package(Threads)
 
+function(find_mex_libs)
 # MEX BLAS may need to be linked for targets using BLAS
-set(_matlab_libdir_suffix)
+set(_suffix)
 if(MSVC)
-  set(_matlab_libdir_suffix microsoft)
+  set(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+  set(_suffix microsoft)
 elseif(MINGW)
-  set(_matlab_libdir_suffix mingw64)
+  set(_suffix mingw64)
 endif()
 
 find_library(Matlab_MEX_BLAS
-NAMES libmwblas mwblas
+NAMES mwblas
 NO_DEFAULT_PATH
 PATHS ${Matlab_EXTERN_LIBRARY_DIR} ${Matlab_BINARIES_DIR}
-PATH_SUFFIXES ${_matlab_libdir_suffix}
+PATH_SUFFIXES ${_suffix}
 )
 message(STATUS "Matlab BLAS library: ${Matlab_MEX_BLAS}")
+endfunction()
+
+find_mex_libs()
 
 matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
 message(STATUS "MEX suffix: ${Matlab_MEX_SUFFIX}")
@@ -66,9 +73,15 @@ if(DEFINED Matlab_mex_${lang})
   return()
 endif()
 
+if(WIN32)
+  set(_lib_flags)
+else()
+  set(_lib_flags ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_EXTERN_LIBRARY_DIR})
+endif()
+
 message(CHECK_START "Check Matlab MEX ${lang}")
 execute_process(
-COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_EXTERN_LIBRARY_DIR} ${src_file}
+COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${_lib_flags} ${src_file}
 TIMEOUT 30
 RESULT_VARIABLE ret
 ERROR_VARIABLE err
@@ -79,6 +92,12 @@ if(ret EQUAL 0)
   set(Matlab_mex_${lang} true CACHE BOOL "Matlab Mex ${lang} OK")
 else()
   message(CHECK_FAIL "Failed: ${src_file}
+  Library flags: ${_lib_flags}
+  ${ret}
+  ${out}
+  ${err}")
+  message(CONFIGURE_LOG "Check Matlab MEX ${lang} failed: ${src_file}
+  Library flags: ${_lib_flags}
   ${ret}
   ${out}
   ${err}")
