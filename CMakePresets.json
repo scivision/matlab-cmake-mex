@@ -1,0 +1,88 @@
+{
+  "version": 6,
+
+"configurePresets": [
+{
+  "name": "default",
+  "binaryDir": "${sourceDir}/build",
+  "cacheVariables": {
+    "CMAKE_COMPILE_WARNING_AS_ERROR": true
+  }
+},
+{
+  "name": "msvc",
+  "inherits": "default",
+  "cacheVariables": {
+    "fortran": false
+  }
+}
+],
+"buildPresets": [
+  {
+    "name": "default",
+    "configurePreset": "default"
+  },
+  {
+    "name": "msvc",
+    "configurePreset": "msvc",
+    "configuration": "Release"
+  }
+],
+"testPresets": [
+{
+  "name": "default",
+  "configurePreset": "default",
+  "output": {
+    "outputOnFailure": true,
+    "verbosity": "verbose"
+  },
+  "execution": {
+    "noTestsAction": "error",
+    "scheduleRandom": true,
+    "stopOnFailure": false,
+    "timeout": 180
+  }
+},
+{
+  "name": "msvc", "inherits": "default",
+  "configurePreset": "msvc",
+  "configuration": "Release"
+}
+],
+"workflowPresets": [
+  {
+    "name": "default",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "default"
+      },
+      {
+        "type": "build",
+        "name": "default"
+      },
+      {
+        "type": "test",
+        "name": "default"
+      }
+    ]
+  },
+  {
+    "name": "msvc",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "msvc"
+      },
+      {
+        "type": "build",
+        "name": "msvc"
+      },
+      {
+        "type": "test",
+        "name": "msvc"
+      }
+    ]
+  }
+]
+}

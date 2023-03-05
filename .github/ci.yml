@@ -1,0 +1,58 @@
+name: matlab
+
+env:
+  CTEST_NO_TESTS_ACTION: error
+
+on:
+  push:
+    paths:
+    - "**.m"
+    - "**.cmake"
+    - "**/CMakeLists.txt"
+    - ".github/workflows/ci.yml"
+
+# R2020b, R2021a, R2021b: max GCC version=9
+# R2022a, R2022b: max GCC version=10
+
+jobs:
+
+  core:
+    timeout-minutes: 15
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        release: [R2022b]
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+
+    - name: Install MATLAB
+      uses: matlab-actions/setup-matlab@v1
+      with:
+        release: ${{ matrix.release }}
+
+    - uses: actions/checkout@v3
+
+    - name: CMake workflow
+      run: cmake --workflow --preset default
+
+  msvc:
+    timeout-minutes: 15
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        release: [R2022b]
+
+    steps:
+
+    - name: Install MATLAB
+      uses: matlab-actions/setup-matlab@v1
+      with:
+        release: ${{ matrix.release }}
+
+    - uses: actions/checkout@v3
+
+    - name: CMake workflow
+      run: cmake --workflow --preset default

@@ -16,7 +16,20 @@
 
 #define  BUFSIZE 256
 
-int main(int argc, char* argv[]){
+void diagnose(void)
+{
+	char* p = getenv("LD_LIBRARY_PATH");
+	if(p) printf("LD_LIBRARY_PATH: %s\n", p);
+
+	p = getenv("DYLD_LIBRARY_PATH");
+	if(p) printf("DYLD_LIBRARY_PATH: %s\n", p);
+
+	p = getenv("PATH");
+	if(p) printf("PATH: %s\n", p);
+}
+
+int main(void)
+{
 Engine *ep;
 mxArray *T = NULL;
 char buffer[BUFSIZE+1];
@@ -26,32 +39,21 @@ double time[10] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 };
 	* Call engOpen with a NULL string. This starts a MATLAB process
 		* on the current host using the command "matlab".
 	*/
+
+diagnose();
+
 if (!(ep = engOpen(NULL))) {
-	char *p;
-
-	p = getenv("LD_LIBRARY_PATH");
-	if(p) printf("LD_LIBRARY_PATH: %s\n", p);
-
-	p = getenv("DYLD_LIBRARY_PATH");
-	if(p) printf("DYLD_LIBRARY_PATH: %s\n", p);
-
-	p = getenv("PATH");
-	if(p) printf("PATH: %s\n", p);
-
-	fprintf(stderr, "\nCan't start MATLAB engine\n");
-	return EXIT_FAILURE;
+  fprintf(stderr, "\nCan't start MATLAB engine\n");
+  return EXIT_FAILURE;
 }
 
-printf("\nMatlab engine started\n");
 
-/*
-	* Create a variable for the data
-	*/
+printf("Matlab engine started\n");
+
+/* Create a variable for the data */
 T = mxCreateDoubleMatrix(1, 10, mxREAL);
 memcpy((void *)mxGetPr(T), (void *)time, sizeof(time));
-/*
-	* Place the variable T into the MATLAB workspace
-	*/
+/* Place the variable T into the MATLAB workspace */
 engPutVariable(ep, "T", T);
 
 /*
@@ -65,7 +67,7 @@ mxDestroyArray(T);
 
 engClose(ep);
 
-return 0;
+return EXIT_SUCCESS;
 }
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){}

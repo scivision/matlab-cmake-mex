@@ -5,8 +5,7 @@ set_property(DIRECTORY PROPERTY LABELS engine)
 if(Matlab_engine_C)
 
 add_executable(engine_c engdemo.c)
-target_include_directories(engine_c PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(engine_c PRIVATE ${Matlab_ENG_LIBRARY} ${Matlab_MX_LIBRARY})
+target_link_libraries(engine_c PRIVATE Matlab::eng)
 
 # matlab_add_mex(NAME engine_c EXECUTABLE SRC engdemo.c LINK_TO ${Matlab_LIBRARIES})
 
@@ -19,8 +18,7 @@ endif(Matlab_engine_C)
 if(Matlab_engine_CXX)
 
 add_executable(engine_cpp eng_demo.cpp)
-target_include_directories(engine_cpp PRIVATE ${Matlab_INCLUDE_DIRS})
-target_link_libraries(engine_cpp PRIVATE ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(engine_cpp PRIVATE Matlab::MatlabEngine Matlab::MatlabDataArray ${CMAKE_THREAD_LIBS_INIT})
 
 # matlab_add_mex(NAME engine_cpp EXECUTABLE SRC eng_demo.cpp LINK_TO ${Matlab_LIBRARIES})
 
@@ -37,8 +35,7 @@ endif(Matlab_engine_CXX)
 
 if(Matlab_engine_Fortran)
   add_executable(engine_fortran eng_demo.F90)
-  target_include_directories(engine_fortran PRIVATE ${Matlab_INCLUDE_DIRS})
-  target_link_libraries(engine_fortran PRIVATE ${Matlab_LIBRARIES})
+  target_link_libraries(engine_fortran PRIVATE Matlab::eng)
 
   add_test(NAME Engine_Fortran COMMAND engine_fortran)
 endif(Matlab_engine_Fortran)

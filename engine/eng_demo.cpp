@@ -4,9 +4,24 @@
 #include "MatlabEngine.hpp"
 
 #include <iostream>
+#include <cstdlib>
+
+void diagnose(void)
+{
+	char* p = getenv("LD_LIBRARY_PATH");
+	if(p) printf("LD_LIBRARY_PATH: %s\n", p);
+
+	p = getenv("DYLD_LIBRARY_PATH");
+	if(p) printf("DYLD_LIBRARY_PATH: %s\n", p);
+
+	p = getenv("PATH");
+	if(p) printf("PATH: %s\n", p);
+}
 
 int main() {
     using namespace matlab::engine;
+
+    diagnose();
 
     //save startup time
     std::vector<String> optionVec;

@@ -12,15 +12,14 @@ PATHS ${Matlab_ROOT_DIR}/extern/examples/refbook
 if(matmul_src AND Matlab_MEX_BLAS AND Matlab_mex_C)
   # add_custom_target(matrixMultiply ALL
   # COMMAND ${Matlab_MEX_COMPILER} ${matmul_src} ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_EXTERN_LIBRARY_DIR} ${Matlab_MEX_BLAS}
-  # BYPRODUCTS matrixMultiply.${Matlab_MEX_SUFFIX}
   # )
 
 matlab_add_mex(NAME matrixMultiply SHARED SRC ${matmul_src} LINK_TO ${Matlab_MEX_BLAS})
 
 add_test(NAME C_MEX_BLAS
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas'); assertSuccess(r)"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch
+ "addpath('$<TARGET_FILE_DIR:matrixMultiply>'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas'); assertSuccess(r)"
 )
-set_property(TEST C_MEX_BLAS PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/matrixMultiply.${Matlab_MEX_SUFFIX})
 
 endif()
 
@@ -37,9 +36,9 @@ if(array_src AND Matlab_mex_CXX)
 matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
 
 add_test(NAME CXX_MEX_Array
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array'); assertSuccess(r)"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch
+  "addpath('$<TARGET_FILE_DIR:arrayProduct>'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array'); assertSuccess(r)"
 )
-set_property(TEST CXX_MEX_Array PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/arrayProduct.${Matlab_MEX_SUFFIX})
 
 endif()
 
@@ -56,9 +55,9 @@ if(matsq_src AND Matlab_mex_Fortran)
 matlab_add_mex(NAME matsq SHARED SRC ${matsq_src})
 
 add_test(NAME FortranMex
-COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex'); assertSuccess(r)"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch
+  "addpath('$<TARGET_FILE_DIR:matsq>'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex'); assertSuccess(r)"
 )
-set_property(TEST FortranMex PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/matsq.${Matlab_MEX_SUFFIX})
 
 endif()
 

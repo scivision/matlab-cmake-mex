@@ -1,8 +1,6 @@
 # https://www.mathworks.com/support/requirements/supported-compilers.html
 include(CheckSourceCompiles)
 
-# set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO "STDOUT")
-
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_definitions($<$<AND:$<BOOL:${MSVC}>,$<COMPILE_LANGUAGE:C,CXX>>:_CRT_SECURE_NO_WARNINGS>)
@@ -10,6 +8,11 @@ add_compile_definitions($<$<AND:$<BOOL:${MSVC}>,$<COMPILE_LANGUAGE:C,CXX>>:_CRT_
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
   CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
   add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-invalid-boz>)
+endif()
+
+if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+  # matlab_add_mex etc. may redefine macros
+  add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wno-macro-redefined>)
 endif()
 
 find_package(Threads)
@@ -28,9 +31,10 @@ NO_DEFAULT_PATH
 PATHS ${Matlab_EXTERN_LIBRARY_DIR} ${Matlab_BINARIES_DIR}
 PATH_SUFFIXES ${_matlab_libdir_suffix}
 )
+message(STATUS "Matlab BLAS library: ${Matlab_MEX_BLAS}")
 
 matlab_get_mex_suffix(${Matlab_ROOT_DIR} Matlab_MEX_SUFFIX)
-message(VERBOSE "MEX suffix: ${Matlab_MEX_SUFFIX}")
+message(STATUS "MEX suffix: ${Matlab_MEX_SUFFIX}")
 
 function(matlab_libpath test_names)
 
@@ -119,15 +123,11 @@ check_source_compiles(CXX
 #include "MatlabEngine.hpp"
 
 int main() {
-    using namespace matlab::engine;
-    std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
-    matlab::data::ArrayFactory factory;
-
-    // Create variables
-    matlab::data::TypedArray<double> data = factory.createArray<double>({ 1, 10 },
-        { 4, 8, 6, -1, -2, -3, -1, 3, 4, 5 });
-
-    return EXIT_SUCCESS;
+using namespace matlab::engine;
+std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
+matlab::data::ArrayFactory factory;
+matlab::data::TypedArray<double> data = factory.createArray<double>({ 1, 1 }, { 0 });
+return EXIT_SUCCESS;
 }
 ]=]
 Matlab_engine_CXX)

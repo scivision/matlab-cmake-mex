@@ -27,13 +27,13 @@ Note that even for compiled Matlab Engine programs, the appropriate "matlab" exe
 
 ## Apple Silicon
 
-If using x86 Matlab on Apple Silicon CPU via Rosetta, configure with:
+macOS users with Apple Silicon CPU (M1, M2, ....) are recommended to use the native Apple Silicon Matlab.
+Better performance for Matlab comes by using the native CPU version of Matlab matching the computer CPU.
+However, if using Intel x86 Matlab on Apple Silicon CPU:
 
 ```sh
 cmake -B build -DCMAKE_OSX_ARCHITECTURES=x86_64
 ```
-
-In general it's better overall for Matlab to use the native ARM version if available for your operating system.
 
 ## Reference
 
