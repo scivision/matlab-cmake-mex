@@ -11,20 +11,25 @@ on:
     - "**/CMakeLists.txt"
     - ".github/workflows/ci.yml"
 
-# R2020b, R2021a, R2021b: max GCC version=9
-# R2022a: max GCC version=10
-# R2022b: min,max GCC version==10
+# R2021a, R2021b: GCC 8
+# R2022a, R2022b: GCC 10
+
+# Engine can't start on CI runner Linux, but works on real Linux computer
 
 jobs:
 
-  core:
+  linux:
     timeout-minutes: 10
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
         release: [R2022b]
-        os: [ubuntu-latest, macos-latest]
+
+    env:
+      CC: gcc-10
+      CXX: g++-10
+      FC: gfortran-10
 
     steps:
 
@@ -36,7 +41,39 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: CMake workflow
-      run: cmake --workflow --preset default
+      run: cmake -Bbuild -Dfortran=no
+
+    - name: Build
+      run: cmake --build build
+
+    - name: Test
+      run: ctest --test-dir build -LE engine -V
+
+  mac:
+    timeout-minutes: 10
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        release: [R2022b]
+
+    steps:
+
+    - name: Install MATLAB
+      uses: matlab-actions/setup-matlab@v1
+      with:
+        release: ${{ matrix.release }}
+
+    - uses: actions/checkout@v3
+
+    - name: CMake workflow
+      run: cmake -Bbuild -Dfortran=no
+
+    - name: Build
+      run: cmake --build build
+
+    - name: Test
+      run: ctest --test-dir build -LE engine -V
 
   msvc:
     timeout-minutes: 10
@@ -56,4 +93,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: CMake workflow
-      run: cmake --workflow --preset msvc
+      run: cmake -Bbuild -Dfortran=no
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Test
+      run: ctest --test-dir build -C Release -LE engine -V
