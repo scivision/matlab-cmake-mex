@@ -12,7 +12,8 @@ on:
     - ".github/workflows/ci.yml"
 
 # R2020b, R2021a, R2021b: max GCC version=9
-# R2022a, R2022b: max GCC version=10
+# R2022a: max GCC version=10
+# R2022b: min,max GCC version==10
 
 jobs:
 

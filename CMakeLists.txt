@@ -10,6 +10,8 @@ if(fortran)
   enable_language(Fortran)
 endif()
 
+message(STATUS "CMake ${CMAKE_VERSION}")
+
 # set(MATLAB_FIND_DEBUG true)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")

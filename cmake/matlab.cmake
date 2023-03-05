@@ -12,6 +12,7 @@ endif()
 
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
   # matlab_add_mex etc. may redefine macros
+  set(CMAKE_REQUIRED_FLAGS -Wno-macro-redefined)
   add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wno-macro-redefined>)
 endif()
 
