@@ -16,11 +16,9 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   endif()
 endif()
 
-if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-  # matlab_add_mex etc. may redefine macros
-  set(CMAKE_REQUIRED_FLAGS -Wno-macro-redefined)
-  add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:-Wno-macro-redefined>)
-endif()
+# matlab_add_mex etc. may redefine macros, but -Wno-macro-redefined is only available for Clang.
+# GCC gives the warning but doesn't have a way to disable the warning.
+
 
 find_package(Threads)
 
