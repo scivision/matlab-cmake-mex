@@ -16,9 +16,24 @@ if(matmul_src AND Matlab_MEX_BLAS AND Matlab_mex_C)
 
 matlab_add_mex(NAME matrixMultiply SHARED SRC ${matmul_src} LINK_TO ${Matlab_MEX_BLAS})
 
+file(GENERATE OUTPUT CmexBatch.m CONTENT
+"addpath('$<TARGET_FILE_DIR:matrixMultiply>')
+
+r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas');
+
+if sum(r.Incomplete) > 0
+  fprintf(2, 'WARNING: Some tests were skipped.\\n')
+  exit(77)
+end
+
+assert(~isempty(r), 'No tests were run.')
+
+assertSuccess(r)
+"
+)
+
 add_test(NAME C_MEX_BLAS
-COMMAND ${Matlab_MAIN_PROGRAM} -batch
- "addpath('$<TARGET_FILE_DIR:matrixMultiply>'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_blas'); assertSuccess(r)"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), CmexBatch"
 )
 
 endif()
@@ -35,9 +50,24 @@ if(array_src AND Matlab_mex_CXX)
 
 matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
 
+file(GENERATE OUTPUT CXXmexBatch.m CONTENT
+"addpath('$<TARGET_FILE_DIR:arrayProduct>')
+
+r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array');
+
+if sum(r.Incomplete) > 0
+  fprintf(2, 'WARNING: Some tests were skipped.\\n')
+  exit(77)
+end
+
+assert(~isempty(r), 'No tests were run.')
+
+assertSuccess(r)
+"
+)
+
 add_test(NAME CXX_MEX_Array
-COMMAND ${Matlab_MAIN_PROGRAM} -batch
-  "addpath('$<TARGET_FILE_DIR:arrayProduct>'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_cpp_array'); assertSuccess(r)"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), CXXmexBatch"
 )
 
 endif()
@@ -54,9 +84,24 @@ if(matsq_src AND Matlab_mex_Fortran)
 
 matlab_add_mex(NAME matsq SHARED SRC ${matsq_src})
 
+file(GENERATE OUTPUT FortranMexBatch.m CONTENT
+"addpath('$<TARGET_FILE_DIR:matsq>')
+
+r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex');
+
+if sum(r.Incomplete) > 0
+  fprintf(2, 'WARNING: Some tests were skipped.\\n')
+  exit(77)
+end
+
+assert(~isempty(r), 'No tests were run.')
+
+assertSuccess(r)
+"
+)
+
 add_test(NAME FortranMex
-COMMAND ${Matlab_MAIN_PROGRAM} -batch
-  "addpath('$<TARGET_FILE_DIR:matsq>'), r=runtests('${CMAKE_CURRENT_SOURCE_DIR}', Name='TestMex/test_fortran_mex'); assertSuccess(r)"
+COMMAND ${Matlab_MAIN_PROGRAM} -batch "addpath('${CMAKE_CURRENT_BINARY_DIR}'), FortranMexBatch"
 )
 
 endif()
@@ -66,3 +111,5 @@ endif()
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 
 matlab_libpath("${test_names}")
+
+set_property(TEST ${test_names} PROPERTY SKIP_RETURN_CODE 77)
