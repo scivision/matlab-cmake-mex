@@ -5,9 +5,13 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_compile_definitions($<$<AND:$<BOOL:${MSVC}>,$<COMPILE_LANGUAGE:C,CXX>>:_CRT_SECURE_NO_WARNINGS>)
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
-  CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
-  add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-invalid-boz>)
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  if(Matlab_release STREQUAL "R2022b" AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 10)
+    message(WARNING "Matlab R2022b requires GCC 10 or later")
+  endif()
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+    add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-invalid-boz>)
+  endif()
 endif()
 
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")

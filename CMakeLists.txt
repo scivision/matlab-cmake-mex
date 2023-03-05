@@ -18,6 +18,9 @@ file(GENERATE OUTPUT .gitignore CONTENT "*")
 
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MAT_LIBRARY MX_LIBRARY MEX_COMPILER REQUIRED)
 
+matlab_get_release_name_from_version(${Matlab_VERSION_STRING} Matlab_release)
+message(STATUS "Matlab: ${Matlab_release}")
+
 # --- Matlab paths and libs
 include(cmake/matlab.cmake)
 
