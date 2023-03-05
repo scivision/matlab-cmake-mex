@@ -71,15 +71,9 @@ if(DEFINED Matlab_mex_${lang})
   return()
 endif()
 
-if(WIN32)
-  set(_lib_flags)
-else()
-  set(_lib_flags ${CMAKE_LIBRARY_PATH_FLAG}${Matlab_EXTERN_LIBRARY_DIR})
-endif()
-
 message(CHECK_START "Check Matlab MEX ${lang}")
 execute_process(
-COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${_lib_flags} ${src_file}
+COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${src_file}
 TIMEOUT 30
 RESULT_VARIABLE ret
 ERROR_VARIABLE err
@@ -90,12 +84,10 @@ if(ret EQUAL 0)
   set(Matlab_mex_${lang} true CACHE BOOL "Matlab Mex ${lang} OK")
 else()
   message(CHECK_FAIL "Failed: ${src_file}
-  Library flags: ${_lib_flags}
   ${ret}
   ${out}
   ${err}")
   message(CONFIGURE_LOG "Check Matlab MEX ${lang} failed: ${src_file}
-  Library flags: ${_lib_flags}
   ${ret}
   ${out}
   ${err}")
