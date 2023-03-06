@@ -36,6 +36,7 @@ Especially on Linux, this may require using a specific release of Matlab compati
 * [R2022a](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2022a-supported-compilers.pdf): Linux: GCC 10
 * [R2021b](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2021b-supported-compilers.pdf): Linux: GCC 8
 * [R2021a](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2021a-supported-compilers.pdf): Linux: GCC 8
+* [R2020b](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2020b-supported-compilers.pdf): Linux: GCC 8
 
 ## Troubleshooting
 
