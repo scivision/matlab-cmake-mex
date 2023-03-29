@@ -71,7 +71,7 @@ endif()
 message(CHECK_START "Check Matlab MEX ${lang}")
 execute_process(
 COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${src_file}
-TIMEOUT 30
+TIMEOUT 60
 RESULT_VARIABLE ret
 ERROR_VARIABLE err
 OUTPUT_VARIABLE out
