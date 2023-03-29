@@ -32,7 +32,8 @@ Note that even for compiled Matlab Engine programs, the appropriate "matlab" exe
 Matlab has narrow windows of compiler versions that work for each Matlab release.
 Especially on Linux, this may require using a specific release of Matlab compatible such that Matlab libstdc++.so and system libstdc++.so are compatible.
 
-* [R2022b](https://www.mathworks.com/support/requirements/supported-compilers-linux.html): Linux: GCC 10
+* [R2023a](https://www.mathworks.com/support/requirements/supported-compilers-linux.html): Linux: GCC 10
+* [R2022b](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2022b-supported-compilers.pdf): Linux: GCC 10
 * [R2022a](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2022a-supported-compilers.pdf): Linux: GCC 10
 * [R2021b](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2021b-supported-compilers.pdf): Linux: GCC 8
 * [R2021a](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2021a-supported-compilers.pdf): Linux: GCC 8
