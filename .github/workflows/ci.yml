@@ -2,6 +2,7 @@ name: matlab
 
 env:
   CTEST_NO_TESTS_ACTION: error
+  MATLAB_RELEASE: R2023a
 
 on:
   push:
@@ -11,20 +12,12 @@ on:
     - "**/CMakeLists.txt"
     - ".github/workflows/ci.yml"
 
-# R2021a, R2021b: GCC 8
-# R2022a, R2022b: GCC 10
-
 # Engine can't start on CI runner Linux, but works on real Linux computer
 
 jobs:
 
   linux:
-    timeout-minutes: 10
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        release: [R2022b]
 
     env:
       CC: gcc-10
@@ -34,9 +27,10 @@ jobs:
     steps:
 
     - name: Install MATLAB
+      timeout-minutes: 10
       uses: matlab-actions/setup-matlab@v1
       with:
-        release: ${{ matrix.release }}
+        release: ${{ env.MATLAB_RELEASE }}
 
     - uses: actions/checkout@v3
 
@@ -50,19 +44,15 @@ jobs:
       run: ctest --test-dir build -LE engine -V
 
   mac:
-    timeout-minutes: 10
     runs-on: macos-latest
-
-    strategy:
-      matrix:
-        release: [R2022b]
 
     steps:
 
     - name: Install MATLAB
+      timeout-minutes: 10
       uses: matlab-actions/setup-matlab@v1
       with:
-        release: ${{ matrix.release }}
+        release: ${{ env.MATLAB_RELEASE }}
 
     - uses: actions/checkout@v3
 
@@ -76,19 +66,15 @@ jobs:
       run: ctest --test-dir build -LE engine -V
 
   msvc:
-    timeout-minutes: 10
     runs-on: windows-latest
-
-    strategy:
-      matrix:
-        release: [R2022b]
 
     steps:
 
     - name: Install MATLAB
+      timeout-minutes: 10
       uses: matlab-actions/setup-matlab@v1
       with:
-        release: ${{ matrix.release }}
+        release: ${{ env.MATLAB_RELEASE }}
 
     - uses: actions/checkout@v3
 
