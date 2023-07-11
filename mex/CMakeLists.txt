@@ -46,6 +46,8 @@ PATHS ${Matlab_ROOT_DIR}/extern/examples/cpp_mex
 
 if(array_src AND Matlab_mex_CXX)
 
+message(STATUS "C++ mex source file: ${array_src}")
+
 matlab_add_mex(NAME arrayProduct SHARED SRC ${array_src})
 
 file(GENERATE OUTPUT CXXmexBatch.m CONTENT
@@ -77,6 +79,8 @@ PATHS ${Matlab_ROOT_DIR}/extern/examples/refbook
 )
 
 if(matsq_src AND Matlab_mex_Fortran)
+
+message(STATUS "Fortran mex source file: ${matsq_src}")
 
 matlab_add_mex(NAME matsq SHARED SRC ${matsq_src})
 
