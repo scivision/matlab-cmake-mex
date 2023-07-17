@@ -98,23 +98,8 @@ set(CMAKE_REQUIRED_LIBRARIES ${Matlab_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 set(CMAKE_REQUIRED_INCLUDES ${Matlab_INCLUDE_DIRS})
 
 # --- check C engine
-check_source_compiles(C
-[=[
-#include "engine.h"
-
-int main(void){
-	Engine *ep;
-	mxArray *T = NULL;
-
-	ep = engOpen("");
-	T = mxCreateDoubleMatrix(1, 10, mxREAL);
-  engClose(ep);
-
-	return 0;
-}
-]=]
-Matlab_engine_C
-)
+file(READ ${CMAKE_CURRENT_LIST_DIR}/engine.c _src)
+check_source_compiles(C "${_src}" Matlab_engine_C)
 
 find_file(times_src
 NAMES timestwo.c
@@ -127,21 +112,8 @@ endif()
 
 # --- check C++ engine
 
-check_source_compiles(CXX
-[=[
-#include <cstdlib>
-#include "MatlabDataArray.hpp"
-#include "MatlabEngine.hpp"
-
-int main() {
-using namespace matlab::engine;
-std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
-matlab::data::ArrayFactory factory;
-matlab::data::TypedArray<double> data = factory.createArray<double>({ 1, 1 }, { 0 });
-return EXIT_SUCCESS;
-}
-]=]
-Matlab_engine_CXX)
+file(READ ${CMAKE_CURRENT_LIST_DIR}/engine.cpp _src)
+check_source_compiles(CXX "${_src}" Matlab_engine_CXX)
 
 find_file(array_src
 NAMES arrayProduct.cpp
@@ -157,23 +129,8 @@ if(NOT fortran)
   return()
 endif()
 
-check_source_compiles(Fortran
-[=[
-#include "fintrf.h"
-program main
-implicit none
-mwPointer, external :: engOpen, mxCreateDoubleMatrix
-mwPointer :: ep, T
-integer, external :: engClose
-integer :: ierr
-
-ep = engOpen("")
-T = mxCreateDoubleMatrix(1, 1, 0)
-ierr = engClose()
-end program
-]=]
-Matlab_engine_Fortran
-)
+file(READ ${CMAKE_CURRENT_LIST_DIR}/engine.f90 _src)
+check_source_compiles(Fortran "${_src}" Matlab_engine_Fortran)
 
 find_file(matsq_src
 NAMES matsq.F
