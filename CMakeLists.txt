@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.22...3.26)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(FATAL_ERROR "In-source builds are not allowed. Do like:
+  cmake -B build
+  cmake --build build")
+endif()
+
 project(MatlabMEX LANGUAGES C CXX)
 
 enable_testing()
@@ -19,7 +25,7 @@ file(GENERATE OUTPUT .gitignore CONTENT "*")
 find_package(Matlab COMPONENTS MAIN_PROGRAM ENG_LIBRARY MAT_LIBRARY MX_LIBRARY MEX_COMPILER REQUIRED)
 
 matlab_get_release_name_from_version(${Matlab_VERSION_STRING} Matlab_release)
-message(STATUS "Matlab: ${Matlab_release}")
+message(STATUS "Matlab: ${Matlab_release} ${Matlab_VERSION_STRING}")
 
 # --- Matlab paths and libs
 include(cmake/matlab.cmake)

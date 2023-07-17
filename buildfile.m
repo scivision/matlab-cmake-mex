@@ -12,25 +12,42 @@ end
 
 function compileTask(context)
 rootFolder = context.Plan.RootFolder;
+out_dir = tempdir;
 
-mex(fullfile(matlabroot, "extern/examples/refbook","matrixMultiply.c"), ...
-"-outdir", rootFolder, ...
-"-lmwblas")
+example_dir = fullfile(matlabroot, "extern/examples");
 
-mex("-client", "engine", fullfile(rootFolder, "engine/engdemo.c"), ...
-"-outdir", rootFolder)
+mex(fullfile(example_dir, "refbook/matrixMultiply.c"), "-outdir", out_dir, "-lmwblas")
+mex(fullfile(example_dir, "cpp_mex/arrayProduct.cpp"), "-outdir", out_dir)
 
-mex("-client", "engine", fullfile(rootFolder, "engine/eng_demo.cpp"), ...
-"-outdir", rootFolder)
+mex("-client", "engine", fullfile(rootFolder, "engine/engdemo.c"), "-outdir", out_dir)
+mex("-client", "engine", fullfile(rootFolder, "engine/eng_demo.cpp"), "-outdir", out_dir)
 
 fc = mex.getCompilerConfigurations('fortran');
-if(~isempty(fc))
-  mex("-client", "engine", fullfile(rootFolder, "engine/eng_demo.F90"), ...
-  "-outdir", rootFolder)
+if isempty(fc)
+  warning("Fortran MEX compiler not available")
+  return
 end
+
+mex("-client", "engine", fullfile(rootFolder, "engine/eng_demo.F90"), ...
+"-outdir", out_dir)
 
 end
 
-function testTask(~)
-assertSuccess(runtests('mex/'))
+function testTask(~, test_dir, test_name, bin_dir)
+arguments
+  ~
+  test_dir (1,1) string = "mex/"
+  test_name (1,1) string = "*"
+  bin_dir string {mustBeScalarOrEmpty} = tempdir;
+end
+
+  addpath(bin_dir)
+
+  r = runtests(test_dir, Name=test_name);
+
+  assert(~isempty(r), 'No tests were run.')
+
+  assert(sum([r.Incomplete]) == 0, "Some tests were skipped.")
+
+  assertSuccess(r)
 end
