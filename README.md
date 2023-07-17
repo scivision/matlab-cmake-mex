@@ -22,6 +22,17 @@ cmake --build build
 ctest --test-dir build
 ```
 
+## MEX
+
+Currently, there is a
+[known CMake bug](https://gitlab.kitware.com/cmake/cmake/-/issues/25068)
+with `matlab_add_mex()` for Fortran that causes runtime failures of MEX binaries.
+This happens on any operating system or Fortran compiler due to the issue with CMake `matlab_add_mex()`.
+
+```
+Invalid MEX-file 'matsq.mexa64': Gateway function is missing
+```
+
 ## Matlab Engine
 
 Matlab Engine is available from several languages including C, C++, Fortran, Python, ...
