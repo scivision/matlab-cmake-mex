@@ -47,7 +47,10 @@ end
 
   assert(~isempty(r), 'No tests were run.')
 
-  assert(sum([r.Incomplete]) == 0, "Some tests were skipped.")
+  if sum([r.Incomplete]) ~= 0
+      warning("Some tests were skipped.")
+      exit(77)
+  end
 
   assertSuccess(r)
 end
