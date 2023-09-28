@@ -59,7 +59,8 @@ jobs:
   msvc:
     strategy:
       matrix:
-        matlab: [R2023b]
+        matlab: [R2023a]
+  # R2023b didn't work with MSVC on GitHub Actions in Sept 2023.
 
     runs-on: windows-latest
 
