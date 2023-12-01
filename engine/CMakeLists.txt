@@ -28,6 +28,7 @@ target_link_libraries(engine_cpp PRIVATE Matlab::MatlabEngine Matlab::MatlabData
 # )
 
 add_test(NAME Engine_CPP COMMAND engine_cpp)
+set_property(TEST Engine_CPP PROPERTY SKIP_REGULAR_EXPRESSION "libstdc;GLIBCXX")
 
 endif(Matlab_engine_CXX)
 
