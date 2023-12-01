@@ -1,4 +1,4 @@
-set_property(DIRECTORY PROPERTY LABELS engine)
+set_property(DIRECTORY PROPERTY LABELS "engine")
 
 # --- C calling Matlab Engine
 

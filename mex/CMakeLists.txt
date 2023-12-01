@@ -1,6 +1,6 @@
 # https://www.mathworks.com/help/matlab/matlab_external/table-of-mex-file-source-code-files.html
 
-set_property(DIRECTORY PROPERTY LABELS mex)
+set_property(DIRECTORY PROPERTY LABELS "mex")
 # C MEX: called from Matlab
 
 find_file(matmul_src
