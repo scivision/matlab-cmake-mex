@@ -68,9 +68,11 @@ if(DEFINED Matlab_mex_${lang})
   return()
 endif()
 
+set(cmd ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${src_file})
+
 message(CHECK_START "Check Matlab MEX ${lang}")
 execute_process(
-COMMAND ${Matlab_MEX_COMPILER} -outdir ${PROJECT_BINARY_DIR}/cmake ${src_file}
+COMMAND ${cmd}
 TIMEOUT 60
 RESULT_VARIABLE ret
 ERROR_VARIABLE err
@@ -80,11 +82,11 @@ if(ret EQUAL 0)
   message(CHECK_PASS "Success")
   set(Matlab_mex_${lang} true CACHE BOOL "Matlab Mex ${lang} OK")
 else()
-  message(CHECK_FAIL "Failed: ${src_file}
+  message(CHECK_FAIL "Failed: ${cmd}
   ${ret}
   ${out}
   ${err}")
-  message(CONFIGURE_LOG "Check Matlab MEX ${lang} failed: ${src_file}
+  message(CONFIGURE_LOG "Check Matlab MEX ${lang} failed: ${cmd}
   ${ret}
   ${out}
   ${err}")

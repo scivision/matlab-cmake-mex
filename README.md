@@ -8,6 +8,9 @@ Examples of Matlab MEX and Matlab Engine via CMake using
 One-time setup from Matlab:
 
 ```matlab
+mex -setup c
+mex -setup c++
+mex -setup fortran
 mex -setup -client engine c
 mex -setup -client engine c++
 mex -setup -client engine fortran
